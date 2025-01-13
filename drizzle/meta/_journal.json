@@ -1,0 +1,32 @@
+{
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1736661350667,
+      "tag": "0000_init",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1736698062012,
+      "tag": "0001_changes",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1736699258567,
+      "tag": "0002_update dueDate",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1736741421671,
+      "tag": "0003_add table subSkills",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "users_tracks" ADD COLUMN "dueDate" date;

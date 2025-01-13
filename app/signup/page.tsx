@@ -1,10 +1,32 @@
 "use client";
+import { createAccount, isUsernameExists } from '@/lib/actions/auth/signup';
+import { userSignup } from '@/types/userstype';
 import { AtSign, CircleUserRound, Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isUsernameValid, setIsUsernameValid] = useState(true);
+  const { register, handleSubmit, formState: { errors } } = useForm<userSignup>()
+  const route = useRouter();
+
+  async function usernameValidation(e: any) {
+    const validity = await isUsernameExists(e.target.value);
+    setIsUsernameValid(!validity);
+  }
+  const onSubmit: SubmitHandler<userSignup> = async (data) => {
+    toast.promise(createAccount(data),
+      {
+        loading: "Loading...",
+        success: (data: string) => { `${data}` + route.push('/home') },
+        error: (err: string) => `${err}`
+      })
+  }
+
   return (
     <div className='flex justify-center items-center h-screen' >
       <div className='w-full max-w-md shadow-lg rounded-lg p-8'>
@@ -12,7 +34,7 @@ export default function Page() {
           <h2 className=' mt-6 font-bold text-2xl text-gray-900' >Welcome</h2>
           <p className='text-sm mt-2 text-gray-600' >Create an account.</p>
         </div>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             {/* email */}
             <div>
@@ -22,9 +44,8 @@ export default function Page() {
                   <Mail className='h-5 w-5 text-gray-400 ' />
                 </div>
                 <input
-                  name='email'
                   type='email'
-                  required
+                  {...register("email", { required: true })}
                   className='pl-10 w-full pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:shadow-md focus:border-gray-600 '
                   placeholder='Enter your email'
                 />
@@ -37,8 +58,9 @@ export default function Page() {
                 <div className='absolute inset-y-0 flex pl-3 items-center' >
                   <AtSign className='text-gray-400 h-5 w-5' />
                 </div>
-                <input required placeholder='Create an username' name='username' type='text' className='pl-10 pr-4 py-2 w-full rounded-lg  border border-gray-300 focus:shadow-md focus:outline-none focus:border-gray-600' />
+                <input {...register("username", { required: true, onChange: usernameValidation })} placeholder='Create an username' name='username' type='text' className='pl-10 pr-4 py-2 w-full rounded-lg  border border-gray-300 focus:shadow-md focus:outline-none focus:border-gray-600' />
               </div>
+              {isUsernameValid ? "" : <span className='text-sm pl-1 text-red-500' >username already exists</span>}
             </div>
             {/*name*/}
             <div className='mt-2'>
@@ -47,7 +69,7 @@ export default function Page() {
                 <div className='absolute flex items-center inset-y-0 pl-3' >
                   <CircleUserRound className='h-5 w-5 text-gray-400' />
                 </div>
-                <input required placeholder='Enter your name' name='name' type='text' className='pl-10 w-full py-2 rounded-lg pr-4 border border-gray-300 focus:outline-none focus:shadow-md focus:border-gray-600' />
+                <input {...register("name", { required: true })} placeholder='Enter your name' name='name' type='text' className='pl-10 w-full py-2 rounded-lg pr-4 border border-gray-300 focus:outline-none focus:shadow-md focus:border-gray-600' />
               </div>
             </div>
             {/* password */}
@@ -57,11 +79,12 @@ export default function Page() {
                 <div className='absolute flex items-center pl-3 inset-y-0 ' >
                   <Lock className='h-5 w-5 text-gray-400' />
                 </div>
-                <input required placeholder='Create a password' minLength={6} name='password' type={showPassword ? "text" : "password"} className='py-2 w-full rounded-lg border border-gray-300 pl-10 pr-4 focus:outline-none focus:shadow-md focus:border-gray-600 ' />
+                <input {...register("password", { required: true, minLength: 8 })} placeholder='Create a password' type={showPassword ? "text" : "password"} className='py-2 w-full rounded-lg border border-gray-300 pl-10 pr-4 focus:outline-none focus:shadow-md focus:border-gray-600 ' />
                 <button type='button' onClick={() => setShowPassword(prev => !prev)} className='absolute right-0 pr-4 flex items-center inset-y-0' >
                   {showPassword ? <EyeOff className='h-5 w-5 text-gray-400' /> : <Eye className='h-5 w-5 text-gray-400' />}
                 </button>
               </div>
+              {errors.password && <span className='text-sm text-gray-800 pl-1' >minimum 8 digits required</span>}
             </div>
           </div>
           <div className='mt-7' ><hr /></div>
@@ -74,6 +97,7 @@ export default function Page() {
           <Link href="/login" className='font-semibold' >Login</Link>
         </div>
       </div>
+      <Toaster position='bottom-center' reverseOrder={false} />
     </div>
   )
 }

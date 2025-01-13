@@ -1,10 +1,22 @@
 "use client";
-import ToggleThemeButton from "@/Components/ToggleThemeButton";
+import ToggleThemeButton from "@/components/ToggleThemeButton";
 import { ThemeProvider } from "@/context/ThemeContext";
-import TrickyDiv from "@/Components/TrickyDiv";
+import TrickyDiv from "@/components/TrickyDiv";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { verifySession } from "@/lib/session";
 
 export default function Home() {
+  useEffect(() => {
+    const checkSession = async () => {
+      const session = await verifySession();
+      if (session?.userId != null) {
+        route.push("/home")
+
+      }
+    }
+    checkSession();
+  }, [])
   const route = useRouter();
   return (
     <>

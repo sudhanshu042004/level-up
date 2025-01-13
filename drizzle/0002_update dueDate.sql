@@ -1,0 +1,1 @@
+ALTER TABLE "tracks" ALTER COLUMN "dueDate" SET DATA TYPE bigint;

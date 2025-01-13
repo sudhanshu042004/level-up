@@ -1,7 +1,7 @@
 import { pgTable as table, pgEnum } from "drizzle-orm/pg-core";
 import * as t from "drizzle-orm/pg-core";
 
-export const rankEnum = pgEnum("rank", ["Dormant", "Awakened", "Transcendent", "Supreme"])
+export const rankEnum = pgEnum("rank", ["Dormant", "Awakened", "Ascended", "Transcendent"])
 export const diffEnum = pgEnum("difficulty", ["easy", "medium", "hard"]);
 
 export const users = table("users", {
@@ -13,6 +13,7 @@ export const users = table("users", {
   rank: rankEnum().default("Dormant"),
   level: t.integer().default(0),
   exp: t.integer().default(0),
+  avatar: t.varchar({ length: 1000 }).notNull().default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTe0VDY4CWWO8S2h_WPo2EfRNUu8xPs9HD_-g&s"),
   createdAt: t.timestamp().defaultNow().notNull()
 });
 
@@ -21,7 +22,7 @@ export const tracks = table("tracks", {
   trackName: t.varchar({ length: 256 }).notNull(),
   difficulty: diffEnum().default("medium").notNull(),
   visibility: t.boolean().default(true),
-  dueDate: t.date(),
+  dueDate: t.bigint({ mode: "number" }),
   createdBy: t.integer("users").references(() => users.id).notNull(),
 });
 
@@ -30,13 +31,20 @@ export const skills = table("skills", {
   skillName: t.varchar({ length: 256 }).notNull(),
   difficulty: diffEnum().default("medium").notNull(),
   parentSkillId: t.integer("skills").references(() => skills.id),
-  trackId: t.integer("tracks").references(() => tracks.id).notNull(),
+  trackId: t.integer("tracks").references(() => tracks.id),
 }) as unknown as ReturnType<typeof table>
+
+export const subSkills = table("subSkills", {
+  id: t.integer().primaryKey().generatedAlwaysAsIdentity(),
+  subSkillName: t.varchar({ length: 256 }).notNull(),
+  parentSkill: t.integer("skills").references(() => skills.id).notNull(),
+})
 
 export const users_tracks = table("users_tracks", {
   userId: t.integer("users").references(() => users.id).notNull(),
   trackId: t.integer("tracks").references(() => tracks.id).notNull(),
   completed: t.boolean().default(false),
+  dueDate: t.date()
 })
 
 export const users_skills = table("users_skills", {
