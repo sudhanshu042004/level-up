@@ -1,7 +1,6 @@
 "use client";
 import ToggleThemeButton from "@/components/ToggleThemeButton";
 import { ThemeProvider } from "@/context/ThemeContext";
-import TrickyDiv from "@/components/TrickyDiv";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { verifySession } from "@/lib/session";
