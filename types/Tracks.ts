@@ -1,5 +1,5 @@
 import { DateRange } from "react-day-picker"
-import { string, z } from "zod"
+import { number, string, z } from "zod"
 
 export enum difficulty {
   Easy = "easy",
@@ -28,6 +28,15 @@ export const skillZod = z.object({
   difficulty: z.enum(["easy", "medium", "hard"]),
   subSkills: z.string().array(),
 }).array().nonempty();
+
+export type UncompleteTrack = {
+  id: number,
+  trackName: string | null,
+  difficulty: "easy" | "medium" | "hard" | null,
+  visibility: Boolean | null,
+  dueDate: string | null,
+  createdBy: number | null
+}
 
 export type TrackHead = {
   trackName: string,

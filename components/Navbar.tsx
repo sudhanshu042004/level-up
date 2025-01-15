@@ -1,33 +1,29 @@
 "use client";
-import { getUserHeadData } from '@/lib/actions/users/getUsersProfile';
-import { expRequired } from '@/lib/LevelManaging';
-import { UserHead } from '@/types/userstype';
+import { UserContext } from '@/context/UserContext';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
+import { Skeleton } from './ui/skeleton';
 
 const Navbar = () => {
-  const [userData, setUserData] = useState<UserHead | undefined>()
-  const [maxExp, setMaxExp] = useState<number | undefined>();
-
-  useEffect(() => {
-    const callData = async () => {
-      const user = await getUserHeadData();
-      setUserData(user);
-      const exp = await expRequired(user?.level as number);
-      setMaxExp(exp);
-    }
-    callData();
-  }, []);
-
-
-  // if (!maxExp && !userData) {
-  //   return (
-  //     <>
-  //       Loading....
-  //     </>
-  //   )
-  // }
-
+  const user = useContext(UserContext);
+  const userData = user?.user;
+  if (userData == undefined) {
+    return (
+      <div className=" p-5 rounded bg-white shadow-md flex justify-between items-center w-full" >
+        <div className='flex' >
+          <Skeleton className='h-16 p-1 w-16 rounded-full' />
+          <div className='mx-2 flex justify-center flex-col' >
+            <Skeleton className='relative w-16 h-3' />
+            <Skeleton className='px-1 w-16 h-3 my-1' />
+            <div className='flex flex-col ' >
+              <Skeleton className='px-1 h-3 w-36' />
+            </div>
+          </div>
+        </div>
+        <Skeleton className='p-2 h-10 w-20' />
+      </div>
+    )
+  }
   return (
     <div className=" p-5 rounded bg-white shadow-md flex justify-between items-center w-full" >
       <div className='flex' >
@@ -37,7 +33,7 @@ const Navbar = () => {
           <div className='px-1 text-sm' >{userData?.rank}</div>
           <div className='flex' >
             <div className=' px-1 text-sm '>Level {userData?.level}</div>
-            <div className='relative bottom-1' > <progress className='rounded text-[#f43c04] text-sm h-2' value={125} max={maxExp} /> </div>
+            <div className='relative bottom-1' > <progress className='rounded text-[#f43c04] text-sm h-2' value={userData.exp as number} max={user?.maxExp} /> </div>
           </div>
         </div>
       </div>

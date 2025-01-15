@@ -1,13 +1,11 @@
-"use client";
 import React, { useState } from 'react';
-import { useSpring, animated } from '@react-spring/web';
 import { Menu, X, Home, User, Settings, UsersRound } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeItem, setActiveItem] = useState('home');
-  const route = useRouter();
+  const router = useRouter();
 
   const menuItems = [
     { title: 'home', icon: <Home size={20} /> },
@@ -16,76 +14,65 @@ const Sidebar = () => {
     { title: 'community', icon: <UsersRound size={20} /> },
   ];
 
-  const sidebarAnimation = useSpring({
-    width: isExpanded ? 256 : 64, // 256px = 16rem (w-64), 64px = 4rem (w-16)
-    config: {
-      tension: 210,
-      friction: 20
-    }
-  });
-
-  const textAnimation = useSpring({
-    opacity: isExpanded ? 1 : 0,
-    transform: isExpanded ? 'translateX(0)' : 'translateX(-20px)',
-    config: {
-      tension: 250,
-      friction: 20
-    }
-  });
-
-  const overlayAnimation = useSpring({
-    opacity: isExpanded ? 0.5 : 0,
-    config: {
-      tension: 250,
-      friction: 20
-    }
-  });
-
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   };
 
   return (
     <>
-      <animated.div
-        style={sidebarAnimation}
-        className="h-screen bg-white shadow-lg fixed left-0 top-0 z-10"
+      <div
+        className={`
+          fixed left-0 top-0 h-screen bg-white shadow-lg z-20
+          transition-all duration-300 ease-in-out
+          ${isExpanded ? 'w-64' : 'w-16'}
+        `}
       >
         {/* Logo area */}
-        <div className=" p-4 border-b flex items-center justify-between" >
+        <div className="p-4 border-b flex items-center justify-between">
           <button
-            className="p-[10px] shadow-md rounded-lg bg-white transition-colors"
+            className="p-2 shadow-md rounded-lg bg-white transition-colors hover:bg-gray-50"
             onClick={toggleSidebar}
           >
-            {isExpanded ? <X className='h-5 w-5' /> : <Menu className='h-6 w-6' />}
+            {isExpanded ? <X className="h-5 w-5" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
 
+        {/* Navigation */}
         <nav className="mt-4">
           {menuItems.map((item) => (
             <button
               key={item.title}
-              onClick={() => { setActiveItem(item.title); route.push(`/${item.title}`) }}
+              onClick={() => {
+                setActiveItem(item.title);
+                router.push(`/${item.title}`);
+              }}
               className={`
-                w-full flex px-6 items-center p-4
-               transition-colors rounded
-                ${activeItem === item.title ? 'bg-[#1c1c2c] text-[#f43c04] ' : 'hover:bg-gray-100'}
+                w-full flex items-center px-6 py-4
+                hover:bg-gray-100 transition-colors rounded
+                ${activeItem === item.title ? 'bg-[#0c0c24] text-[#f43c04]' : ''}
               `}
             >
               <span>{item.icon}</span>
-              <animated.span style={textAnimation} className="ml-4">
+              <span
+                className={`
+                  ml-4 whitespace-nowrap
+                  transition-all duration-300 ease-in-out
+                  ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 overflow-hidden'}
+                `}
+              >
                 {item.title}
-              </animated.span>
+              </span>
             </button>
           ))}
         </nav>
-      </animated.div >
+      </div>
 
       {/* Overlay */}
-      < animated.div
-        style={overlayAnimation}
-        className={`fixed inset-0 bg-black z-10 lg:hidden ${!isExpanded && 'pointer-events-none'}`
-        }
+      <div
+        className={`
+          fixed inset-0 bg-black transition-opacity duration-300 ease-in-out z-10 lg:hidden
+          ${isExpanded ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+        `}
         onClick={toggleSidebar}
       />
     </>
