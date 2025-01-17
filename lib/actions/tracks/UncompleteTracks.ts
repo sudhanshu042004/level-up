@@ -1,7 +1,7 @@
 "use server";
 import { verifySession } from "@/lib/session";
-import { tracks, users_tracks } from "@/src/db/schema";
-import { UncompleteTrack } from "@/types/Tracks";
+import { skills, subSkills, tracks, users_tracks } from "@/src/db/schema";
+import { difficulty, QueryResult, Track } from "@/types/Tracks";
 import { and, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { NextResponse } from "next/server";
@@ -9,20 +9,68 @@ import { NextResponse } from "next/server";
 const db = drizzle(process.env.DATABASE_URL!);
 
 
-export const getUncompleteTracks = async () => {
+
+export const getUncompleteTracks = async (): Promise<Track[]> => {
   const session = await verifySession();
   if (session == null) {
-    NextResponse.redirect("/login")
-  };
-  const userId: number = session?.userId as number;
+    NextResponse.redirect("/login");
+    throw new Error("token not avaliable")
+  }
 
-  const results: UncompleteTrack[] = await db
-    .select({ id: users_tracks.trackId, trackName: tracks.trackName, difficulty: tracks.difficulty, visibility: tracks.visibility, dueDate: users_tracks.dueDate, createdBy: tracks.createdBy })
+  const userId: number = session?.userId as number;
+  const results: QueryResult[] = await db
+    .select({
+      trackId: tracks.id,
+      trackName: tracks.trackName,
+      difficulty: tracks.difficulty,
+      visibility: tracks.visibility,
+      dueDate: users_tracks.dueDate,
+      createdBy: tracks.createdBy,
+      skillId: skills.id,
+      skillName: skills.skillName,
+      skillDifficulty: skills.difficulty,
+      subSkillName: subSkills.subSkillName,
+    })
     .from(users_tracks)
     .leftJoin(tracks, eq(users_tracks.trackId, tracks.id))
+    .leftJoin(skills, eq(skills.trackId, users_tracks.trackId))
+    .leftJoin(subSkills, eq(subSkills.parentSkill, skills.id))
     .where(and(eq(users_tracks.completed, false), eq(users_tracks.userId, userId)))
-    .orderBy(users_tracks.dueDate);
+    .orderBy(users_tracks.dueDate) as QueryResult[];
 
-  return results;
-}
+  const formattedResults = results.reduce<Track[]>((acc, row) => {
+    let track = acc.find(t => t.trackId === row.trackId);
 
+    if (!track) {
+      track = {
+        trackId: row.trackId,
+        trackName: row.trackName,
+        difficulty: row.difficulty,
+        visibility: row.visibility,
+        dueDate: row.dueDate,
+        createdBy: row.createdBy,
+        skills: []
+      };
+      acc.push(track);
+    }
+
+    let skill = track.skills.find(s => s.skillName === row.skillName);
+
+    if (!skill) {
+      skill = {
+        skillName: row.skillName as string,
+        difficulty: row.skillDifficulty as difficulty,
+        subSkills: []
+      };
+      track.skills.push(skill);
+    }
+
+    if (row.subSkillName) {
+      skill.subSkills.push(row.subSkillName);
+    }
+
+    return acc;
+  }, []);
+
+  return formattedResults;
+};

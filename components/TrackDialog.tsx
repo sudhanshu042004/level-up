@@ -1,16 +1,23 @@
 import React from 'react'
 import * as dialog from '@/components/ui/dialog'
+import { Track } from '@/types/Tracks';
+import { ChevronDown, ChevronUp, Globe, GlobeLock } from 'lucide-react';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
+import { getDifficultyColor } from '@/lib/DifficultyColor';
 
 interface TrackDialogProps {
   open: boolean,
   setOpen: (isOpen: boolean) => void;
-  trackId: number
+  track: Track
 }
 
-const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, trackId }) => {
+const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track }) => {
+  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+
   return (
     <dialog.Dialog open={open} onOpenChange={setOpen} >
-      <dialog.DialogTrigger  >
+      <dialog.DialogTrigger>
         <span className='hidden' ></span>
       </dialog.DialogTrigger>
       {/* content */}
@@ -18,14 +25,48 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, trackId }) => 
         {/* header */}
         <dialog.DialogHeader>
           <dialog.DialogTitle>
-            title
+            <div className='flex items-center gap-3' >
+              <h3 className="text-xl font-semibold text-gray-900">
+                {track.trackName}
+              </h3>
+              {track.visibility ? (
+                <Globe className="h-5 w-5 text-gray-400" />
+              ) : (
+                <GlobeLock className="h-5 w-5 text-gray-400" />
+              )}
+            </div>
           </dialog.DialogTitle>
           <dialog.DialogDescription>
-            description
+            {track.difficulty}
           </dialog.DialogDescription>
         </dialog.DialogHeader>
         <div>
-          {trackId}
+          {track.skills.map((skill, i) => (
+            <Card className={`mt-2 relative hover:shadow-xl flex hover:-translate-y-1 transition-all duration-300 `}
+              key={i}
+              onClick={() => setIsExpanded(prev => !prev)}
+            >
+
+              <div className='p-6' >
+                <div className='flex font-medium items-center' >
+                  {skill.skillName}
+                </div>
+                <Badge
+                  className={`${getDifficultyColor(skill.difficulty)}  `}
+                  variant={"secondary"}
+                >
+                  {skill.difficulty}
+                </Badge>
+              </div>
+              <div className='absolute right-2 inset-y-3' >
+                {skill.subSkills.length > 0 &&
+                  <div>
+                    {isExpanded ? <ChevronUp /> : <ChevronDown />}
+                  </div>
+                }
+              </div>
+            </Card>
+          ))}
         </div>
         {/* footer */}
         <dialog.DialogFooter>
@@ -36,7 +77,7 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, trackId }) => 
           </dialog.DialogClose>
         </dialog.DialogFooter>
       </dialog.DialogContent>
-    </dialog.Dialog>
+    </dialog.Dialog >
   )
 }
 

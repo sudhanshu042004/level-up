@@ -1,15 +1,14 @@
 import { getUncompleteTracks } from "@/lib/actions/tracks/UncompleteTracks";
-import { UncompleteTrack } from "@/types/Tracks"
-import { Result } from "postcss";
+import { Track } from "@/types/Tracks"
 import { createContext, ReactNode, useEffect, useState } from "react"
 
-export const UncompleteTracksContext = createContext<UncompleteTrack[] | undefined>(undefined)
+export const UncompleteTracksContext = createContext<Track[] | undefined>(undefined)
 
 export const UncompleteTracks = ({ children }: { children: ReactNode }) => {
-  const [tracks, setTracks] = useState<UncompleteTrack[]>();
+  const [tracks, setTracks] = useState<Track[]>();
   useEffect(() => {
     async function getTrack() {
-      const result = await getUncompleteTracks();
+      const result: Track[] = await getUncompleteTracks();
       setTracks(result);
     }
     getTrack();
