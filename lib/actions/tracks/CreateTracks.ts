@@ -2,13 +2,13 @@
 
 import { verifySession } from "@/lib/session";
 import { skills, subSkills, tracks, users_skills, users_tracks } from "@/src/db/schema";
-import { difficulty, SkillType, skillZod, TrackHead, trackzod } from "@/types/Tracks";
+import { CreatingSkill, difficulty, SkillType, skillZod, TrackHead, trackzod } from "@/types/Tracks";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { NextResponse } from "next/server";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
-const validateSkills = (skills: SkillType[]) => {
+const validateSkills = (skills: CreatingSkill[]) => {
   const { success, data } = skillZod.safeParse(skills);
   if (!success) {
     throw new Error("Skill Required");
