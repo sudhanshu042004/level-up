@@ -5,14 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Plus, X, Save } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
-import { difficulty } from '@/types/Tracks';
+import { CreatingSkill, difficulty, } from '@/types/Tracks';
 
-type SkillType = {
-  skillName: string,
-  difficulty: difficulty,
-  subSkills: string[],
-}
-const AddSkill = ({ setSkills }: { setSkills: React.Dispatch<React.SetStateAction<SkillType[]>> }) => {
+const AddSkill = ({ setSkills }: { setSkills: React.Dispatch<React.SetStateAction<CreatingSkill[]>> }) => {
   const subSkillInput = useRef<HTMLInputElement>(null);
   const [subSkills, setSubSkills] = useState<Array<string>>([]);
   const [skillName, setSkillName] = useState<string>('');
@@ -42,7 +37,7 @@ const AddSkill = ({ setSkills }: { setSkills: React.Dispatch<React.SetStateActio
         subSkills: subSkills,
       };
 
-      setSkills((prev: SkillType[]) => [...prev, newSkill]);
+      setSkills((prev) => [...prev, newSkill]);
       setSkillName('');
       setDiff(difficulty.Medium);
       setSubSkills([]);

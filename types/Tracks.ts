@@ -24,6 +24,12 @@ export type SkillType = {
   subSkills: string[],
 }
 
+export type CreatingSkill = {
+  skillName: string,
+  difficulty: difficulty,
+  subSkills: string[],
+}
+
 
 export const skillZod = z.object({
   skillName: z.string(),
@@ -44,7 +50,7 @@ export type TrackHead = {
   trackName: string,
   visibility: boolean,
   dueDate: DateRange | undefined,
-  skills: SkillType[],
+  skills: CreatingSkill[],
 }
 export const trackzod = z.object({
   trackName: z.string(),

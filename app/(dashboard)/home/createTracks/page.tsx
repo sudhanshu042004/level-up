@@ -4,7 +4,7 @@ import DynamicInput from '@/components/DynamicInput';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { difficulty, SkillType, TrackHead } from '@/types/Tracks';
+import { CreatingSkill, difficulty, SkillType, TrackHead } from '@/types/Tracks';
 import { ArrowLeft, ChevronDown, ChevronUp, Globe, GlobeLock, X } from 'lucide-react'
 import Link from 'next/link';
 import React, { useState } from 'react'
@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 
 
 const createTracks = () => {
-  const [skills, setSkills] = useState<SkillType[]>([]);
+  const [skills, setSkills] = useState<CreatingSkill[]>([]);
   const [trackName, setTrackName] = useState<string>('');
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [isHover, setIsHover] = useState<boolean>(false);
