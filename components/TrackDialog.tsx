@@ -16,7 +16,7 @@ interface TrackDialogProps {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
   track: Track;
-  setTrack: React.Dispatch<React.SetStateAction<Track>>;
+  setTrack: React.Dispatch<React.SetStateAction<Track | undefined>>;
 }
 interface UpdatingResponse {
   level: number,
@@ -42,12 +42,17 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, setTrac
   };
 
   const handleSkillComplete = (data: UpdatingResponse, skillId: number, trackId: number) => {
-    setTrack((prev) => ({
-      ...prev,
-      skills: prev.skills.map(skill =>
-        skill.skillId === skillId ? { ...skill, completed: true } : skill
-      )
-    }));
+    setTrack((prev) => {
+      if (!prev) return undefined;
+
+      return {
+        ...prev,
+        skills: prev.skills.map(skill =>
+          skill.skillId === skillId ? { ...skill, completed: true } : skill
+        ),
+        trackId: prev.trackId ?? null,
+      };
+    });
 
     const { level, exp } = data;
     const currentLevel = UserContextData?.user.level ?? 0;
@@ -72,12 +77,15 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, setTrac
     }
 
     UserContextData?.setUser((prev) => {
+      if (!prev) return null;
+
       return {
         ...prev,
         level: level,
-        exp: exp
-      }
-    })
+        exp: exp,
+        username: prev.username,
+      };
+    });
 
     TrackContextData?.setTracks((prev) => {
       return prev?.filter(prev => prev.trackId !== trackId)
