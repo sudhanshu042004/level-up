@@ -27,7 +27,7 @@ export type SkillType = {
 export type CreatingSkill = {
   skillName: string,
   difficulty: difficulty,
-  subSkills: string[],
+  subSkills: string[]
 }
 
 
