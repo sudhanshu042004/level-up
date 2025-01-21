@@ -1,6 +1,6 @@
 "use server";
 import { verifySession } from "@/lib/session";
-import { skills, subSkills, tracks, users_tracks } from "@/src/db/schema";
+import { skills, subSkills, tracks, users_skills, users_tracks } from "@/src/db/schema";
 import { difficulty, QueryResult, Track } from "@/types/Tracks";
 import { and, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -30,11 +30,13 @@ export const getUncompleteTracks = async (): Promise<Track[]> => {
       skillName: skills.skillName,
       skillDifficulty: skills.difficulty,
       subSkillName: subSkills.subSkillName,
+      SkillCompleted: users_skills.completed
     })
     .from(users_tracks)
     .leftJoin(tracks, eq(users_tracks.trackId, tracks.id))
     .leftJoin(skills, eq(skills.trackId, users_tracks.trackId))
     .leftJoin(subSkills, eq(subSkills.parentSkill, skills.id))
+    .leftJoin(users_skills, and(eq(users_skills.userId, userId), eq(users_skills.skillsId, skills.id)))
     .where(and(eq(users_tracks.completed, false), eq(users_tracks.userId, userId)))
     .orderBy(users_tracks.dueDate) as QueryResult[];
 
@@ -58,6 +60,8 @@ export const getUncompleteTracks = async (): Promise<Track[]> => {
 
     if (!skill) {
       skill = {
+        skillId: row.skillId as number,
+        completed: row.SkillCompleted as boolean,
         skillName: row.skillName as string,
         difficulty: row.skillDifficulty as difficulty,
         subSkills: []

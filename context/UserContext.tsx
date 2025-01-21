@@ -6,6 +6,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 type UserContextType = {
   user: UserHead;
   maxExp: number;
+  setUser: React.Dispatch<React.SetStateAction<UserHead | null>>
 };
 
 export const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -15,7 +16,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [maxExp, setMaxExp] = useState<number | null>(null);
 
   useEffect(() => {
-    // Fetch user data
     const fetchUser = async () => {
       try {
         const result = await getUserHeadData();
@@ -25,10 +25,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     fetchUser();
-  }, []); // Runs once on component mount
+  }, []);
 
   useEffect(() => {
-    // Calculate max experience when user data is available
     const fetchMaxExp = async () => {
       if (user && typeof user.level === "number") {
         try {
@@ -40,11 +39,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     fetchMaxExp();
-  }, [user]); // Runs whenever the user state changes
+  }, [user]);
 
   const contextValue: UserContextType = {
     user: user as UserHead,
     maxExp: maxExp as number,
+    setUser: setUser
   };
 
   return (

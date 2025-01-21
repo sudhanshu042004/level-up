@@ -41,4 +41,6 @@ export type UserHead = {
   level: number | null,
   exp: number | null,
   avatar: string,
+  name: string,
+  email: string,
 }

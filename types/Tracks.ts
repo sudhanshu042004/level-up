@@ -17,7 +17,9 @@ export type TrackType = {
 }
 
 export type SkillType = {
+  skillId: number,
   skillName: string,
+  completed: boolean,
   difficulty: difficulty,
   subSkills: string[],
 }
@@ -61,6 +63,7 @@ export interface QueryResult {
   skillName: string | null;
   skillDifficulty: difficulty | null;
   subSkillName: string | null;
+  SkillCompleted: boolean | null
 }
 
 export interface Track {

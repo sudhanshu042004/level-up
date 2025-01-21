@@ -30,9 +30,8 @@ export const skills = table("skills", {
   id: t.integer().primaryKey().generatedAlwaysAsIdentity(),
   skillName: t.varchar({ length: 256 }).notNull(),
   difficulty: diffEnum().default("medium").notNull(),
-  parentSkillId: t.integer("skills").references(() => skills.id),
   trackId: t.integer("tracks").references(() => tracks.id),
-}) as unknown as ReturnType<typeof table>
+})
 
 export const subSkills = table("subSkills", {
   id: t.integer().primaryKey().generatedAlwaysAsIdentity(),

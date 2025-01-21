@@ -2,7 +2,7 @@
 
 import { verifySession } from "@/lib/session";
 import { users } from "@/src/db/schema";
-import { User, UserHead } from "@/types/userstype";
+import { UserHead } from "@/types/userstype";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { NextResponse } from "next/server";
@@ -15,7 +15,15 @@ export async function getUserHeadData() {
   const userId = parseInt(userSession?.userId as string);
 
   const result: UserHead[] = await db
-    .select({ username: users.username, rank: users.rank, level: users.level, exp: users.exp, avatar: users.avatar })
+    .select({
+      username: users.username,
+      rank: users.rank,
+      level: users.level,
+      exp: users.exp,
+      avatar: users.avatar,
+      name: users.name,
+      email: users.email
+    })
     .from(users)
     .where(eq(users.id, userId));
   const user: UserHead = result[0];

@@ -27,6 +27,13 @@
       "when": 1736741421671,
       "tag": "0003_add table subSkills",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1737397484003,
+      "tag": "0004_update skill Table",
+      "breakpoints": true
     }
   ]
 }

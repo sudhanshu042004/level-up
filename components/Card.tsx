@@ -17,7 +17,7 @@ const getDifficultyColor = (difficulty: difficulty) => {
 const TrackCard = () => {
   const [open, setOpen] = useState(false);
   const data = useContext(UncompleteTracksContext);
-  const [track, setTrack] = React.useState<Track | undefined>()
+  const [track, setTrack] = React.useState<Track>()
 
 
   function handleClick(track: Track) {
@@ -25,7 +25,7 @@ const TrackCard = () => {
     setTrack(track)
   }
 
-  if (!data) {
+  if (!data?.tracks) {
     return (
       <div className="flex justify-center items-center p-8">
         <div className="flex flex-col items-center gap-4">
@@ -39,10 +39,10 @@ const TrackCard = () => {
   return (
     <div className="max-w-4xl mx-auto px-4  py-6 w-full space-y-4">
       {track &&
-        <TrackDialog open={open} setOpen={setOpen} track={track} />
+        <TrackDialog open={open} setOpen={setOpen} track={track} setTrack={setTrack} />
       }
 
-      {data.map((track) => (
+      {data.tracks.map((track) => (
         <Card
           key={track.trackId}
           onClick={() => handleClick(track)}

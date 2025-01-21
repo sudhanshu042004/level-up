@@ -4,7 +4,7 @@ import DynamicInput from '@/components/DynamicInput';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { SkillType, TrackHead } from '@/types/Tracks';
+import { difficulty, SkillType, TrackHead } from '@/types/Tracks';
 import { ArrowLeft, ChevronDown, ChevronUp, Globe, GlobeLock, X } from 'lucide-react'
 import Link from 'next/link';
 import React, { useState } from 'react'
