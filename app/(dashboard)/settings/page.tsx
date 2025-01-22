@@ -38,8 +38,9 @@ const Settings = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = await UplaodImage(imageFile as File, previewUrl as string);
+    const url = await UplaodImage(imageFile as File);
     console.log(url)
+    setPreviewUrl(url as string)
     setIsEditing(false);
   };
 
@@ -53,7 +54,7 @@ const Settings = () => {
               <div className="relative group">
                 <Avatar.Avatar className="h-28 w-28 ring-4 ring-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <Avatar.AvatarImage
-                    src={previewUrl || "https://github.com/shadcn.png"}
+                    src={previewUrl || user.avatar}
                     alt={user.username}
                     className="object-cover"
                   />
