@@ -1,13 +1,12 @@
 "use client"
 import React, { useContext, useState } from 'react';
 import { UserContext } from '@/context/UserContext';
-import ProfileProgress from '@/components/ProfileProgressor';
 import * as Avatar from '@/components/ui/avatar';
 import { Pencil, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import UplaodImage from '@/lib/actions/users/UploadImage';
+import ExpProgress from '@/components/ExpProgress';
 
 const Settings = () => {
   const userContextData = useContext(UserContext);
@@ -38,9 +37,16 @@ const Settings = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = await UplaodImage(imageFile as File);
-    console.log(url)
-    setPreviewUrl(url as string)
+    // const url = await UplaodImage(imageFile as File);
+    const newUser = {
+      username: username,
+      name: name,
+    };
+    console.log(newUser);
+
+
+    // console.log(url)
+    // setPreviewUrl(url as string)
     setIsEditing(false);
   };
 
@@ -49,7 +55,7 @@ const Settings = () => {
       <Card className="w-full max-w-2xl p-6 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-xl border-0">
         <CardContent>
           <div className="relative flex justify-center mb-12">
-            <ProfileProgress percent={(user.exp as number) / maxExp * 100} />
+            <ExpProgress currentExp={user.exp as number} maxExp={userContextData.maxExp} size={144} />
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
               <div className="relative group">
                 <Avatar.Avatar className="h-28 w-28 ring-4 ring-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">

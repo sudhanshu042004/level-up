@@ -8,7 +8,7 @@ import { UserContext } from '@/context/UserContext'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Sparkles } from 'lucide-react'
 import SkillCard from '@/components/SkillsCard'
-import ProfileProgress from '@/components/ProfileProgressor'
+import ExpProgress from '@/components/ExpProgress'
 
 // level badge
 const LevelBadge = ({ level }: { level: number }) => (
@@ -23,7 +23,6 @@ const LevelBadge = ({ level }: { level: number }) => (
   </div>
 );
 
-// skill Card
 
 const Profile = () => {
   const userContextData = useContext(UserContext)
@@ -49,11 +48,11 @@ const Profile = () => {
         {user.level && <LevelBadge level={user.level} />}
         <CardContent className="space-y-6">
           <div className="relative flex justify-center">
-            <ProfileProgress percent={user.exp as number / userContextData.maxExp * 100} />
+            <ExpProgress size={144} currentExp={user.exp as number} maxExp={userContextData.maxExp} />
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
               <Avatar className="h-28 w-28 ring-4 ring-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
                 <AvatarImage
-                  src={"https://github.com/shadcn.png"}
+                  src={user.avatar}
                   alt={user.username}
                   className="object-cover"
                 />
