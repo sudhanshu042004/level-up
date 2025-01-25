@@ -33,7 +33,7 @@ function NextRank(tracksCount: number, currentRank: rank): rank {
   if (tracksCount >= 5 && currentRank == rank.Awakened) {
     return rank.Ascended
   }
-  if (tracksCount == 1) {
+  if (tracksCount >= 1) {
     return rank.Awakened
   }
   return currentRank
@@ -82,6 +82,7 @@ const UpdateRank = async () => {
     track: []
   })
 
+  console.log(formattedResult.track.length)
   const newRank: rank = NextRank(formattedResult.track.length, formattedResult.Rank)
 
   if (newRank === formattedResult.Rank) return null;
