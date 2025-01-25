@@ -1,11 +1,12 @@
 "use server";
 
 import { verifySession } from "@/lib/session";
-import { skills, tracks, users, users_skills, users_tracks } from "@/src/db/schema";
+import { skills, users, users_skills, users_tracks } from "@/src/db/schema";
 import { difficulty } from "@/types/Tracks";
 import { and, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { UpdateRank } from "../users/UpdateRank";
+import UpdateRank from "../users/UpdateRank";
+import { rank } from "@/types/userstype";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -71,12 +72,14 @@ export const UpdateSkill = async (SkillId: number, skillDifficulty: difficulty, 
       .set({ completed: true })
       .where(and(eq(users_tracks.userId, userId), eq(users_tracks.trackId, trackId)))
 
-    await UpdateRank(trackId, userId);
+    const rank: rank | null = await UpdateRank() as rank | null;
+    console.log(rank);
 
     return {
       level: level,
       exp: exp,
       trackId: trackId,
+      rank: rank
     }
 
   } catch (e) {

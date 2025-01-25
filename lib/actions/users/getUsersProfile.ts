@@ -25,7 +25,7 @@ export async function getUserHeadData() {
       email: users.email
     })
     .from(users)
-    .where(eq(users.id, userId));
+    .where(eq(users.id, userId)) as UserHead[];
   const user: UserHead = result[0];
 
   return user;

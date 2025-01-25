@@ -52,8 +52,16 @@ const CommunityGrid = () => {
 
   if (!communitPost) {
     return (
-      <>loading...</>
-    )
+      <div className="flex h-screen w-full justify-center items-center p-8">
+        <div className="flex flex-col items-center gap-4">
+          <div className='animate-bounce' >
+            <div className="animate-spin h-12 w-12 border-b-8  border-white border-t-2 rounded-full  bg-black " ></div>
+          </div>
+
+          <p className="text-gray-500 font-medium">Loading tracks...</p>
+        </div>
+      </div>
+    );
   }
 
   function handlClick(track: Track) {

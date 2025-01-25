@@ -5,6 +5,8 @@ import { skills, subSkills, tracks, users_skills, users_tracks } from "@/src/db/
 import { CreatingSkill, difficulty, SkillType, skillZod, TrackHead, trackzod } from "@/types/Tracks";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { NextResponse } from "next/server";
+import { getUncompleteTracks } from "./UncompleteTracks";
+import GetTrack from "./GetTrack";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -72,8 +74,7 @@ export const createTrack = async (trackData: TrackHead) => {
 
   try {
     const { date, dueDate } = dateCalculations(trackData);
-
-    await db.transaction(async (tx) => {
+    const newTrackId: number = await db.transaction(async (tx) => {
 
       const newTrack: typeof tracks.$inferInsert = {
         trackName: data.trackName,
@@ -84,7 +85,7 @@ export const createTrack = async (trackData: TrackHead) => {
       }
 
       const result = await tx.insert(tracks).values(newTrack).returning({ id: tracks.id })
-      const trackId: number = result[0].id as number
+      const trackId = result[0].id as number
 
       for (const skill of skillsData) {
 
@@ -120,11 +121,12 @@ export const createTrack = async (trackData: TrackHead) => {
         dueDate: dueDate,
       }
       await tx.insert(users_tracks).values(newUserTrack);
-
+      return trackId
     })
 
-    console.log("track created")
-    return "Track Successfully created"
+    // console.log(newTrackId);
+    const Trackdata = await GetTrack(newTrackId);
+    return Trackdata;
   } catch (e) {
     console.log(e);
     throw new Error("Something went Wrong");

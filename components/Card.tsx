@@ -19,7 +19,6 @@ const TrackCard = () => {
   const data = useContext(UncompleteTracksContext);
   const [track, setTrack] = React.useState<Track>()
 
-
   function handleClick(track: Track) {
     setOpen(true);
     setTrack(track)
@@ -37,7 +36,7 @@ const TrackCard = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4  py-6 w-full space-y-4">
+    <div className="max-w-4xl mx-auto px-4  py-6 w-full space-y-4" >
       {track &&
         <TrackDialog open={open} setOpen={setOpen} track={track} setTrack={setTrack} />
       }

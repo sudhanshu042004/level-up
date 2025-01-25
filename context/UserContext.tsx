@@ -1,5 +1,4 @@
 import { getUserHeadData } from "@/lib/actions/users/getUsersProfile";
-import { expRequired } from "@/lib/LevelManaging";
 import { UserHead } from "@/types/userstype";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
@@ -9,6 +8,10 @@ type UserContextType = {
   setUser: React.Dispatch<React.SetStateAction<UserHead | null>>
 };
 
+const expRequired = async (level: number) => {
+  const exp = level * 200;
+  return exp;
+}
 export const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {

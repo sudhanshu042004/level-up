@@ -21,7 +21,15 @@ type Identifier = {
 }
 export type userLogin = z.infer<typeof loginSchema>
 
-export type rank = "Dormant" | "Awakened" | "Ascended" | "Transcendent"
+// export type rank = "Dormant" | "Awakened" | "Ascended" | "Transcendent"
+
+export enum rank {
+  Dormant = "Dormant",
+  Awakened = "Awakened",
+  Ascended = "Ascended",
+  Transcendent = "Transcendent"
+
+}
 
 export type User = {
   id: number,

@@ -4,10 +4,10 @@ import DynamicInput from '@/components/DynamicInput';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { CreatingSkill, difficulty, SkillType, TrackHead } from '@/types/Tracks';
+import { CreatingSkill, difficulty, SkillType, Track, TrackHead } from '@/types/Tracks';
 import { ArrowLeft, ChevronDown, ChevronUp, Globe, GlobeLock, X } from 'lucide-react'
 import Link from 'next/link';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
@@ -15,6 +15,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { createTrack } from '@/lib/actions/tracks/CreateTracks';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { UncompleteTracksContext } from '@/context/IncompleteTracks';
 
 
 const createTracks = () => {
@@ -24,12 +25,22 @@ const createTracks = () => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [date, setDate] = useState<DateRange | undefined>(undefined)
   const [isPublic, setIspublic] = useState<boolean>(true);
+
   const router = useRouter();
+  const trackData = useContext(UncompleteTracksContext);
 
   const toggleExpand = (index: number) => {
     setExpandedIndex((prev) => (prev === index ? null : index));
   };
 
+
+  function handleSuccess(track: Track) {
+    console.log(track);
+    trackData?.setTracks((prev) => prev ? [...prev, track] : [track]);
+    console.log(trackData?.tracks)
+    router.push("/home")
+    return 'created successfully'
+  }
   const handleSubmit = () => {
     if (!trackName || skills.length == 0) {
       toast.error('At least one skill required');
@@ -45,7 +56,7 @@ const createTracks = () => {
     console.log(skills.length);
     toast.promise(createTrack(track), {
       loading: 'creating....',
-      success: (data: string) => { router.push('/home'); return 'created successfully' },
+      success: (data: Track) => handleSuccess(data),
       error: 'Something went wrong!'
     }, {
       success: {
@@ -82,6 +93,8 @@ const createTracks = () => {
                     key={i}>
                     <div
                       className={`p-2 right-0 absolute top-5 ${isHover ? 'opacity-100' : 'opacity-0'} bg-red-300 rounded-full m-2 `}
+                      onMouseEnter={() => setIsHover(true)}
+                      onMouseLeave={() => setIsHover(false)}
                     >
                       <X className='h-3 w-3 ' />
                     </div>
