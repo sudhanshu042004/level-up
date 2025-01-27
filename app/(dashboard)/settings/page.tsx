@@ -2,11 +2,13 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from '@/context/UserContext';
 import * as Avatar from '@/components/ui/avatar';
-import { Pencil, X } from 'lucide-react';
+import { LucideEllipsisVertical, Pencil, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import ExpProgress from '@/components/ExpProgress';
+import UpdateUserProfile from '@/lib/actions/users/UpdateUser';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Settings = () => {
   const userContextData = useContext(UserContext);
@@ -15,6 +17,7 @@ const Settings = () => {
   const [name, setName] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isDisable, setIsDisable] = useState<boolean>(false)
 
   if (userContextData?.user == null || userContextData.maxExp == null) {
     return (
@@ -24,7 +27,7 @@ const Settings = () => {
     );
   }
 
-  const { user, maxExp } = userContextData;
+  const { user, maxExp, setUser } = userContextData;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,21 +40,59 @@ const Settings = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // const url = await UplaodImage(imageFile as File);
+    setIsDisable(true);
     const newUser = {
-      username: username,
-      name: name,
+      username: username || user.username,
+      name: name || user.name,
     };
-    console.log(newUser);
+    if (imageFile == null) {
+      console.log("there is no file")
+      const res = await UpdateUserProfile(newUser, undefined)
+      if (res == 400) toast.error("something went wrong!", { icon: '😔' })
+      else toast.success("updated successfully", { icon: '☺️' })
+      setIsDisable(false);
+      setIsEditing(false)
+      return;
+    };
 
+    const bytes = await imageFile?.arrayBuffer();
+    const buffer = Buffer.from(bytes as ArrayBuffer)
+    const filedata = buffer.toString("base64");
 
-    // console.log(url)
-    // setPreviewUrl(url as string)
+    const fileObject = {
+      fileName: imageFile.name,
+      fileType: imageFile.type,
+      fileData: filedata
+    }
+
+    const url = await UpdateUserProfile(newUser, fileObject);
+    console.log(url)
+    if (url == 400) {
+      toast.error("failed to upload image")
+    }
+    else toast.success("updated successfully", { icon: '☺️' })
+
+    const updatedUser = {
+      name: newUser.name,
+      username: newUser.username,
+      rank: user.rank,
+      level: user.level,
+      exp: user.exp,
+      email: user.email,
+      avatar: url as string
+    }
+
+    setUser(updatedUser)
+    setPreviewUrl(url as string)
+    setIsDisable(false)
     setIsEditing(false);
+
+
   };
 
   return (
     <div className="flex justify-center items-center w-full mt-20">
+      <Toaster />
       <Card className="w-full max-w-2xl p-6 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-xl border-0">
         <CardContent>
           <div className="relative flex justify-center mb-12">
@@ -146,6 +187,7 @@ const Settings = () => {
                 </Button>
                 <Button
                   type="submit"
+                  disabled={isDisable}
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   Save Changes

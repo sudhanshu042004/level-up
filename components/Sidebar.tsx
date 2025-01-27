@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, X, Home, User, Settings, UsersRound } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -17,6 +17,26 @@ const Sidebar = () => {
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    const storedActiveItem = localStorage.getItem("storedActiveItem");
+    if (storedActiveItem) {
+      setActiveItem(storedActiveItem);
+    } else {
+      const currentRoute = window.location.pathname.split('/')[1];
+      if (currentRoute && menuItems.find(item => item.title === currentRoute)) {
+        setActiveItem(currentRoute);
+      } else {
+        setActiveItem('home')
+      }
+    }
+  })
+
+  function handleClick(item: string) {
+    setActiveItem(item);
+    router.push(`/${item}`)
+    localStorage.setItem("storedActiveItem", item)
+  }
 
   return (
     <>
@@ -42,10 +62,7 @@ const Sidebar = () => {
           {menuItems.map((item) => (
             <button
               key={item.title}
-              onClick={() => {
-                setActiveItem(item.title);
-                router.push(`/${item.title}`);
-              }}
+              onClick={() => handleClick(item.title)}
               className={`
                 w-full flex items-center px-6 py-4
                 hover:bg-gray-100 transition-colors rounded

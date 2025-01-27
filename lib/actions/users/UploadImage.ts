@@ -1,24 +1,32 @@
 "use server";
 
-import { verifySession } from "@/lib/session";
 import { users } from "@/src/db/schema";
 import cloudinary from "@/utils/cloudinary";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { NextResponse } from "next/server";
+import { z } from "zod";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
-const UplaodImage = async (file: File,) => {
+const fileUploadSchema = z.object({
+  fileName: z.string(),
+  fileType: z.string(),
+  fileData: z.string(),
+})
 
-  const session = await verifySession();
-  if (!session?.userId) {
-    return NextResponse.redirect("/login");
+type fileUploadSchemaType = z.infer<typeof fileUploadSchema>
+
+
+const UplaodImage = async (file: fileUploadSchemaType, userId: number) => {
+  const { success, data } = fileUploadSchema.safeParse(file);
+  if (!success) {
+    console.log("invlaid type file");
+    return 401;
   }
-  const { userId } = session;
+
   try {
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const base64Data = data.fileData;
+    const buffer = Buffer.from(base64Data, "base64");
 
     const result = await new Promise((res, rej) => {
 
@@ -33,13 +41,12 @@ const UplaodImage = async (file: File,) => {
     if (!result || typeof result !== 'object' || !('secure_url' in result)) {
       return { error: "Upload failed" };
     }
-    await db.update(users).set({ avatar: result.secure_url as string }).where(eq(users.id, userId as number))
-    console.log(result.secure_url);
+    await db.update(users).set({ avatar: result.secure_url as string }).where(eq(users.id, userId))
 
     return result.secure_url as string;
   } catch (e) {
     console.log(e);
-    return null;
+    return 400;
   }
 }
 

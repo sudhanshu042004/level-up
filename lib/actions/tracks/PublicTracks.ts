@@ -111,7 +111,6 @@ const PublicTrack = async () => {
     return acc;
   }, []);
 
-  console.log(formattedResults);
 
   return formattedResults;
 }

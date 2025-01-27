@@ -27,7 +27,6 @@ export const GetSkills = async () => {
 
   const skillMap = new Map<Number, SkillType>();
 
-  console.log(result);
   result.forEach(row => {
     const {
       users_skills: { skillsId },

@@ -27,13 +27,13 @@ interface Formatted {
 }
 
 function NextRank(tracksCount: number, currentRank: rank): rank {
-  if (tracksCount >= 10 && currentRank == rank.Transcendent) {
+  if (tracksCount >= 16 && currentRank == rank.Transcendent) {
     return rank.Transcendent
   }
-  if (tracksCount >= 5 && currentRank == rank.Awakened) {
+  if (tracksCount >= 6 && currentRank == rank.Awakened) {
     return rank.Ascended
   }
-  if (tracksCount >= 1) {
+  if (tracksCount >= 1 && currentRank == rank.Dormant) {
     return rank.Awakened
   }
   return currentRank
