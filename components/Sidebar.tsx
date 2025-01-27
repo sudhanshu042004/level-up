@@ -19,23 +19,17 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
-    const storedActiveItem = localStorage.getItem("storedActiveItem");
-    if (storedActiveItem) {
-      setActiveItem(storedActiveItem);
+    const currentRoute = window.location.pathname.split('/')[1];
+    if (currentRoute && menuItems.find(item => item.title === currentRoute)) {
+      setActiveItem(currentRoute);
     } else {
-      const currentRoute = window.location.pathname.split('/')[1];
-      if (currentRoute && menuItems.find(item => item.title === currentRoute)) {
-        setActiveItem(currentRoute);
-      } else {
-        setActiveItem('home')
-      }
+      setActiveItem('home')
     }
   })
 
   function handleClick(item: string) {
     setActiveItem(item);
     router.push(`/${item}`)
-    localStorage.setItem("storedActiveItem", item)
   }
 
   return (
