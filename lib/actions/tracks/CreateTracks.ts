@@ -5,7 +5,6 @@ import { skills, subSkills, tracks, users_skills, users_tracks } from "@/src/db/
 import { CreatingSkill, difficulty, SkillType, skillZod, TrackHead, trackzod } from "@/types/Tracks";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { NextResponse } from "next/server";
-import { getUncompleteTracks } from "./UncompleteTracks";
 import GetTrack from "./GetTrack";
 
 const db = drizzle(process.env.DATABASE_URL!);

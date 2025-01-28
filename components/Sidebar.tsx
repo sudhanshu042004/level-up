@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, X, Home, User, Settings, UsersRound } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import RankIncreaseToast from './IncreaseRank';
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeItem, setActiveItem] = useState('home');
+  const [toast, setToast] = useState(true);
   const router = useRouter();
 
+  function handleToastClose() {
+    setToast(false);
+  }
   const menuItems = [
     { title: 'home', icon: <Home size={20} /> },
     { title: 'profile', icon: <User size={20} /> },
@@ -76,6 +81,9 @@ const Sidebar = () => {
             </button>
           ))}
         </nav>
+
+        <RankIncreaseToast newRank='Supreme' oldRank='Awakened' onClose={handleToastClose} />
+
       </div>
 
       {/* Overlay */}

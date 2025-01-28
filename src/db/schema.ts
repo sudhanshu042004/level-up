@@ -44,6 +44,10 @@ export const users_tracks = table("users_tracks", {
   trackId: t.integer("tracks").references(() => tracks.id).notNull(),
   completed: t.boolean().default(false),
   dueDate: t.date()
+}, (table) => {
+  return [{
+    pk: t.primaryKey({ columns: [table.trackId, table.userId] }),
+  }]
 })
 
 export const users_skills = table("users_skills", {
