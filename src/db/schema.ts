@@ -45,13 +45,17 @@ export const users_tracks = table("users_tracks", {
   completed: t.boolean().default(false),
   dueDate: t.date()
 }, (table) => {
-  return [{
-    pk: t.primaryKey({ columns: [table.trackId, table.userId] }),
-  }]
+  return {
+    pk: t.primaryKey({ columns: [table.userId, table.trackId] })
+  }
 })
 
 export const users_skills = table("users_skills", {
   userId: t.integer("users").references(() => users.id).notNull(),
   skillsId: t.integer("skills").references(() => skills.id).notNull(),
   completed: t.boolean().default(false),
+}, (table) => {
+  return {
+    pk: t.primaryKey({ columns: [table.userId, table.skillsId] })
+  }
 })

@@ -34,6 +34,20 @@
       "when": 1737397484003,
       "tag": "0004_update skill Table",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1738252778028,
+      "tag": "0005_add primary key",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1738253559611,
+      "tag": "0006_add primary key to user_skills",
+      "breakpoints": true
     }
   ]
 }

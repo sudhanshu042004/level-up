@@ -8,7 +8,7 @@ type UserContextType = {
   setUser: React.Dispatch<React.SetStateAction<UserHead | null>>
 };
 
-const expRequired = async (level: number) => {
+const expRequired = (level: number) => {
   const exp = level * 200;
   return exp;
 }
@@ -34,7 +34,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const fetchMaxExp = async () => {
       if (user && typeof user.level === "number") {
         try {
-          const exp = await expRequired(user.level);
+          const exp = expRequired(user.level);
           setMaxExp(exp);
         } catch (error) {
           console.error("Failed to calculate max experience:", error);

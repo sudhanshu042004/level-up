@@ -1,0 +1,1 @@
+ALTER TABLE "users_tracks" ADD CONSTRAINT "users_tracks_users_tracks_pk" PRIMARY KEY("users","tracks");

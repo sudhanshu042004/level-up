@@ -4,7 +4,7 @@ import DynamicInput from '@/components/DynamicInput';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { CreatingSkill, difficulty, SkillType, Track, TrackHead } from '@/types/Tracks';
+import { CreatingSkill, Track, TrackHead } from '@/types/Tracks';
 import { ArrowLeft, ChevronDown, ChevronUp, Globe, GlobeLock, X } from 'lucide-react'
 import Link from 'next/link';
 import React, { useContext, useState } from 'react'
@@ -17,8 +17,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { UncompleteTracksContext } from '@/context/IncompleteTracks';
 
-
-const createTracks = () => {
+const CreateTracks = () => {
   const [skills, setSkills] = useState<CreatingSkill[]>([]);
   const [trackName, setTrackName] = useState<string>('');
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -33,14 +32,12 @@ const createTracks = () => {
     setExpandedIndex((prev) => (prev === index ? null : index));
   };
 
-
   function handleSuccess(track: Track) {
-    console.log(track);
     trackData?.setTracks((prev) => prev ? [...prev, track] : [track]);
-    console.log(trackData?.tracks)
     router.push("/home")
     return 'created successfully'
   }
+
   const handleSubmit = () => {
     if (!trackName || skills.length == 0) {
       toast.error('At least one skill required');
@@ -53,7 +50,7 @@ const createTracks = () => {
       skills: skills,
       dueDate: date
     }
-    console.log(skills.length);
+
     toast.promise(createTrack(track), {
       loading: 'creating....',
       success: (data: Track) => handleSuccess(data),
@@ -70,60 +67,77 @@ const createTracks = () => {
   }
 
   return (
-    <div className='flex justify-center items-center h-screen w-full  ' >
-      <div className='shadow-md p-6 relative rounded-lg ring-gray-200 ring-1 max-w-xl bg-w w-full ' >
-        <Link
-          href='/home'
-          className='rounded-full m-2 absolute ring-gray-200 ring-1 shadow-md p-2 hover:shadow-lg z-10 left-0 top-0 cursor-pointer '
-        >
-          <ArrowLeft className='h-5 w-5' />
-        </Link>
-        <div className='mt-24 mb-6' >
+    <div className='min-h-screen w-full flex items-center justify-center bg-gray-50 px-4 py-6 sm:px-6 lg:px-8'>
+      <div className='w-full max-w-lg bg-white rounded-xl shadow-md ring-1 ring-gray-200 relative'>
+        {/* Back Button */}
+        <div className='absolute top-4 left-4 z-10'>
+          <Link
+            href='/home'
+            className='flex items-center justify-center w-8 h-8 rounded-full ring-1 ring-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white'
+          >
+            <ArrowLeft className='w-4 h-4' />
+          </Link>
+        </div>
 
-          <div className='text-sm font-medium mb-2 ' >Track Name</div>
-          <DynamicInput name={trackName} setName={setTrackName} TextSize='text-3xl' />
+        {/* Main Content Container */}
+        <div className='p-4 sm:p-6 space-y-6'>
+          {/* Track Name Section */}
+          <div className='mt-12 sm:mt-16'>
+            <label className='block text-sm font-medium text-gray-700 mb-2'>Track Name</label>
+            <DynamicInput
+              name={trackName}
+              setName={setTrackName}
+              TextSize='text-xl sm:text-2xl md:text-3xl'
+            />
+          </div>
 
-          {/* show skills */}
-          <div >
+          {/* Skills List */}
+          <div className='space-y-3'>
             {skills.length > 0 && (
-              <div className="py-4 px-4 rounded-lg mt-4" >
+              <div className='space-y-2'>
                 {skills.map((skill, i) => (
                   <div
-                    className="flex flex-col relative rounded-lg ring-gray-200 ring-1 py-4 px-4 m-2 hover:shadow-md transition-all duration-300 "
-                    key={i}>
-                    <div
-                      className={`p-2 right-0 absolute top-5 ${isHover ? 'opacity-100' : 'opacity-0'} bg-red-300 rounded-full m-2 `}
+                    key={i}
+                    className='relative bg-white rounded-lg ring-1 ring-gray-200 p-4 hover:shadow-sm transition-shadow'
+                  >
+                    {/* Delete Button */}
+                    <button
+                      className={`absolute top-2 right-2 p-1.5 rounded-full bg-red-100 hover:bg-red-200 transition-colors ${isHover ? 'opacity-100' : 'opacity-0'
+                        }`}
                       onMouseEnter={() => setIsHover(true)}
                       onMouseLeave={() => setIsHover(false)}
                     >
-                      <X className='h-3 w-3 ' />
-                    </div>
-                    <div
-                      className="flex justify-between my-3 items-center"
-                    >
-                      <div className='pl-6' >
-                        <div className='text-xl font-medium' >{skill.skillName}</div>
-                        <div className='text-xs font-medium text-gray-500' >{skill.difficulty}</div>
+                      <X className='w-3 h-3' />
+                    </button>
+
+                    {/* Skill Header */}
+                    <div className='flex items-center justify-between pr-8'>
+                      <div>
+                        <h3 className='text-base font-medium'>{skill.skillName}</h3>
+                        <p className='text-xs text-gray-500'>{skill.difficulty}</p>
                       </div>
 
-                      {/* SubSkills dropdown */}
                       {skill.subSkills.length > 0 && (
                         <button
                           onClick={() => toggleExpand(i)}
-                          className="flex items-center pr-8 focus:outline-none"
+                          className='p-1 hover:bg-gray-100 rounded-full transition-colors'
                         >
-                          {expandedIndex === i ? <ChevronUp /> : <ChevronDown />}
+                          {expandedIndex === i ? (
+                            <ChevronUp className='w-4 h-4' />
+                          ) : (
+                            <ChevronDown className='w-4 h-4' />
+                          )}
                         </button>
                       )}
                     </div>
 
-                    {/* Show subSkills if expanded */}
+                    {/* SubSkills */}
                     {expandedIndex === i && (
-                      <div className="ml-6 transition-transform duration-300 mt-2">
+                      <div className='mt-3 pl-4 space-y-1.5'>
                         {skill.subSkills.map((subSkill, subIndex) => (
-                          <div key={subIndex} className="text-sm text-gray-600">
+                          <p key={subIndex} className='text-sm text-gray-600'>
                             {subSkill}
-                          </div>
+                          </p>
                         ))}
                       </div>
                     )}
@@ -133,60 +147,66 @@ const createTracks = () => {
             )}
           </div>
 
-          {/* dialog for add skills */}
-          <div className='my-4' >
-            <div className='font-medium text-sm mb-2' >Add skills</div>
+          {/* Add Skills Section */}
+          <div>
+            <label className='block text-sm font-medium text-gray-700 mb-2'>Add skills</label>
             <AddSkill setSkills={setSkills} />
           </div>
-        </div>
 
-        <div>
-          {/* private or public  */}
-          <div className='font-medium text-sm mb-2' >public or private</div>
-          <div className='flex mt-2 mb-4' >
-            <div
-              className={`p-2 mx-2 ${isPublic ? 'shadow-lg' : ''} cursor-pointer rounded-full hover:bg-gray-200 transition-colors duration-300`}
-              onClick={() => setIspublic(true)}
-            >
-              <Globe />
-            </div>
-            <div
-              className={`p-2 mx-2 ${isPublic ? '' : 'shadow-lg'} cursor-pointer rounded-full hover:bg-gray-200 transition-colors duration-300`}
-              onClick={() => setIspublic(false)}
-            >
-              <GlobeLock />
+          {/* Visibility Toggle */}
+          <div>
+            <label className='block text-sm font-medium text-gray-700 mb-3'>
+              Public or private
+            </label>
+            <div className='flex space-x-3'>
+              <button
+                onClick={() => setIspublic(true)}
+                className={cn(
+                  'p-2.5 rounded-full transition-all',
+                  isPublic ? 'bg-gray-100 shadow-sm' : 'hover:bg-gray-50'
+                )}
+              >
+                <Globe className='w-5 h-5' />
+              </button>
+              <button
+                onClick={() => setIspublic(false)}
+                className={cn(
+                  'p-2.5 rounded-full transition-all',
+                  !isPublic ? 'bg-gray-100 shadow-sm' : 'hover:bg-gray-50'
+                )}
+              >
+                <GlobeLock className='w-5 h-5' />
+              </button>
             </div>
           </div>
 
-          {/* date */}
-          <div className='font-medium text-sm mb-2' >select due date</div>
+          {/* Date Picker */}
           <div>
+            <label className='block text-sm font-medium text-gray-700 mb-2'>
+              Select due date
+            </label>
             <Popover>
-              <PopoverTrigger>
+              <PopoverTrigger asChild>
                 <Button
-                  id='Date'
-                  variant={"outline"}
+                  variant="outline"
                   className={cn(
-                    "w-[300px] justify-start text-left font-normal",
+                    "w-full justify-start text-left font-normal",
                     !date && "text-muted-foreground"
                   )}
                 >
-                  <CalendarIcon />
+                  <CalendarIcon className="mr-2 h-4 w-4" />
                   {date?.from ? (
                     date.to ? (
                       <>
-                        {format(date.from, "LLL dd,y")} - {" "}
-                        {format(date.to, "LLL dd,y")}
+                        {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
                       </>
                     ) : (
-                      format(date.from, "LLL dd,y")
+                      format(date.from, "LLL dd, y")
                     )
                   ) : (
                     <span>Pick a date</span>
                   )}
-
                 </Button>
-
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
@@ -195,22 +215,26 @@ const createTracks = () => {
                   defaultMonth={date?.from}
                   selected={date}
                   onSelect={setDate}
-                  numberOfMonths={2}
+                  numberOfMonths={1}
                 />
               </PopoverContent>
             </Popover>
           </div>
-        </div>
 
-        <div className='absolute right-5 ring-gray-500 ring-1 p-2 rounded cursor-pointer hover:bg-black hover:text-white transition-colors duration-300 text-sm mb-2 font-medium bottom-5' >
-          <button onClick={handleSubmit} >create</button>
+          {/* Submit Button */}
+          <div className='pt-4'>
+            <Button
+              onClick={handleSubmit}
+              className="w-full sm:w-auto float-right bg-black text-white hover:bg-gray-800"
+            >
+              Create Track
+            </Button>
+          </div>
         </div>
-
       </div>
       <Toaster />
-    </div >
+    </div>
   )
 }
 
-
-export default createTracks
+export default CreateTracks

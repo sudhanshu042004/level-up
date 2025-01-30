@@ -40,7 +40,7 @@ const TrackCard = () => {
       {track &&
         <TrackDialog open={open} setOpen={setOpen} track={track} setTrack={setTrack} />
       }
-
+      {data.tracks.length <= 0 && <div className='flex justify-center items-center text-xl text-gray-300' >No tracks added</div>}
       {data.tracks.map((track) => (
         <Card
           key={track.trackId}

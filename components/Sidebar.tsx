@@ -1,49 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, X, Home, User, Settings, UsersRound } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import RankIncreaseToast from './IncreaseRank';
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeItem, setActiveItem] = useState('home');
-  const [toast, setToast] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
 
-  function handleToastClose() {
-    setToast(false);
-  }
-  const menuItems = [
-    { title: 'home', icon: <Home size={20} /> },
-    { title: 'profile', icon: <User size={20} /> },
-    { title: 'settings', icon: <Settings size={20} /> },
-    { title: 'community', icon: <UsersRound size={20} /> },
-  ];
-
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
-  };
 
   useEffect(() => {
     const currentRoute = window.location.pathname.split('/')[1];
     if (currentRoute && menuItems.find(item => item.title === currentRoute)) {
       setActiveItem(currentRoute);
     } else {
-      setActiveItem('home')
+      setActiveItem('home');
     }
-  })
+  }, []);
+
+  const menuItems = [
+    { title: 'home', icon: <Home size={isMobile ? 24 : 20} /> },
+    { title: 'profile', icon: <User size={isMobile ? 24 : 20} /> },
+    { title: 'settings', icon: <Settings size={isMobile ? 24 : 20} /> },
+    { title: 'community', icon: <UsersRound size={isMobile ? 24 : 20} /> },
+  ];
+
+
+  const toggleSidebar = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   function handleClick(item: string) {
     setActiveItem(item);
-    router.push(`/${item}`)
+    router.push(`/${item}`);
+    if (isMobile) {
+      setIsExpanded(false);
+    }
   }
 
-  return (
+  // Mobile bottom navigation bar
+  const MobileNav = () => (
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t z-30 md:hidden">
+      <div className="flex justify-around items-center h-16">
+        {menuItems.map((item) => (
+          <button
+            key={item.title}
+            onClick={() => handleClick(item.title)}
+            className={`
+              flex flex-col items-center justify-center w-full h-full
+              ${activeItem === item.title ? 'text-[#f43c04] bg-[#0c0c24]' : 'text-gray-600'}
+            `}
+          >
+            {item.icon}
+            <span className="text-xs mt-1 capitalize">{item.title}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Desktop/Tablet sidebar
+  const DesktopSidebar = () => (
     <>
       <div
         className={`
           fixed left-0 top-0 h-screen bg-white shadow-lg z-20
           transition-all duration-300 ease-in-out
           ${isExpanded ? 'w-64' : 'w-16'}
+          hidden md:block
         `}
       >
         {/* Logo area */}
@@ -64,14 +88,14 @@ const Sidebar = () => {
               onClick={() => handleClick(item.title)}
               className={`
                 w-full flex items-center px-6 py-4
-                hover:bg-gray-100 transition-colors rounded
+                hover:bg-gray-100 transition-colors
                 ${activeItem === item.title ? 'bg-[#0c0c24] text-[#f43c04]' : ''}
               `}
             >
               <span>{item.icon}</span>
               <span
                 className={`
-                  ml-4 whitespace-nowrap
+                  ml-4 whitespace-nowrap capitalize
                   transition-all duration-300 ease-in-out
                   ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 overflow-hidden'}
                 `}
@@ -81,19 +105,24 @@ const Sidebar = () => {
             </button>
           ))}
         </nav>
-
-        <RankIncreaseToast newRank='Supreme' oldRank='Awakened' onClose={handleToastClose} />
-
       </div>
 
-      {/* Overlay */}
+      {/* Overlay for tablet */}
       <div
         className={`
-          fixed inset-0 bg-black transition-opacity duration-300 ease-in-out z-10 lg:hidden
+          fixed inset-0 bg-black transition-opacity duration-300 ease-in-out z-10
+          md:hidden
           ${isExpanded ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'}
         `}
         onClick={toggleSidebar}
       />
+    </>
+  );
+
+  return (
+    <>
+      <DesktopSidebar />
+      <MobileNav />
     </>
   );
 };

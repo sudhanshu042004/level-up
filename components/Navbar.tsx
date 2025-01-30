@@ -96,16 +96,10 @@ const Navbar = () => {
 
       <Link
         href="/home/createTracks"
-        className="group flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out"
-        style={{
-          backgroundColor: colors.red,
-          color: colors.white,
-          transform: 'hover:-translate-y-1',
-          boxShadow: 'hover:0 4px 6px rgba(0,0,0,0.1)'
-        }}
+        className="group flex items-center bg-[#f43c04] text-[#ffffff] hover:-translate-y-1 hover:shadow-lg  space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out"
       >
         <span className="font-semibold">Create</span>
-        <ChevronRight className='w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity' />
+        <ChevronRight className='w-5 h-5 transition-opacity' />
       </Link>
     </div>
   );

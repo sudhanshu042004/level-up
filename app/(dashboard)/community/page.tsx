@@ -6,51 +6,49 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getDifficultyColor } from '@/lib/DifficultyColor';
 import { difficulty } from '@/types/Tracks';
-import { Globe } from 'lucide-react';
+import { Globe, Users } from 'lucide-react';
 import CommunityDialog from '@/components/CommunityDialog';
 import PublicTrack from '@/lib/actions/tracks/PublicTracks';
 
 interface Track {
-  trackId: number,
-  trackName: string,
-  difficulty: difficulty,
-  dueDate: number | null,
+  trackId: number;
+  trackName: string;
+  difficulty: difficulty;
+  dueDate: number | null;
   skills: {
-    skillId: number,
-    skillName: string,
-    skillDifficulty: difficulty,
-    subSkillName: string[],
-  }[]
-
+    skillId: number;
+    skillName: string;
+    skillDifficulty: difficulty;
+    subSkillName: string[];
+  }[];
 }
 
 interface PublicTrackType {
-  userId: number,
-  username: string,
-  avatar: string,
-  level: number | null,
-  exp: number | null,
-  track: Track
-
+  userId: number;
+  username: string;
+  avatar: string;
+  level: number | null;
+  exp: number | null;
+  track: Track;
 }
+
+const expRequired = (level: number) => level * 200;
 
 const CommunityGrid = () => {
   const [click, setClick] = useState(false);
-  const [track, setTrack] = useState<Track | undefined>();
-  const [communitPost, setCommunityPost] = useState<PublicTrackType[] | undefined>();
-
+  const [track, setTrack] = useState<Track>();
+  const [communityPost, setCommunityPost] = useState<PublicTrackType[]>();
+  console.log(communityPost);
 
   useEffect(() => {
     async function getData() {
       const result = await PublicTrack();
-      setCommunityPost(result as PublicTrack[]);
+      setCommunityPost(result as PublicTrackType[]);
     }
     getData();
-  }, [])
+  }, []);
 
-
-
-  if (!communitPost) {
+  if (!communityPost) {
     return (
       <div className="flex h-screen w-full justify-center items-center p-8">
         <div className="flex flex-col items-center gap-4">
@@ -64,50 +62,72 @@ const CommunityGrid = () => {
     );
   }
 
-  function handlClick(track: Track) {
-    setTrack(track)
+  function handleClick(track: Track) {
+    setTrack(track);
     setClick(true);
   }
 
   return (
-    <div className="container ml-20 mx-auto p-4">
+    <div className="container mx-auto md:ml-16 lg:ml-16 px-4 py-8">
       {track && <CommunityDialog track={track} open={click} setOpen={setClick} />}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {communitPost.map((post, index) => (
-
-          <Card key={index}>
-            <CardHeader>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {communityPost.map((post, index) => (
+          <Card
+            key={index}
+            className="group transition-all duration-300 hover:shadow-lg"
+          >
+            <CardHeader className="space-y-4">
               <CardTitle>
-                <div className="flex">
+                <div className="flex items-center gap-4">
                   <div className="relative">
-                    <ExpProgress size={50} currentExp={post.exp as number} maxExp={100} />
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                      <Avatar>
-                        <AvatarImage src={post.avatar} alt={post.username} />
-                      </Avatar>
+                    <div className="relative h-14 w-14">
+                      <ExpProgress
+                        size={56}
+                        currentExp={post.exp as number}
+                        maxExp={expRequired(post.level as number)}
+                      />
+                      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <Avatar className="h-10 w-10 border-2 border-white">
+                          <AvatarImage src={post.avatar} alt={post.username} />
+                        </Avatar>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex ml-2 items-center">
-                    {post.username}
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-900">{post.username}</span>
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                        Level {post.level}
+                      </Badge>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      EXP: {post.exp?.toLocaleString()} / {expRequired(post.level as number).toLocaleString()}
+                    </div>
                   </div>
                 </div>
               </CardTitle>
             </CardHeader>
-            <CardContent className='bg-gray-100 pt-4 cursor-pointer' onClick={() => handlClick(post.track)} >
-              <div className="space-y-2 text-center">
-                <div className="flex items-center gap-3">
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    {post.track.trackName}
-                  </h3>
-                  <Globe className="h-5 w-5 text-gray-400" />
-                </div>
-                <div className="flex items-center gap-4">
+            <CardContent
+              className="cursor-pointer bg-gray-50 p-6 transition-colors duration-200 hover:bg-gray-100"
+              onClick={() => handleClick(post.track)}
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {post.track.trackName}
+                    </h3>
+                    <Globe className="h-5 w-5 text-gray-400 transition-colors group-hover:text-blue-500" />
+                  </div>
                   <Badge
                     variant="secondary"
                     className={`${getDifficultyColor(post.track.difficulty as difficulty)} px-3 py-1`}
                   >
                     {post.track.difficulty}
                   </Badge>
+                </div>
+                <div className="text-sm text-gray-600">
+                  {post.track.skills.length} skills included
                 </div>
               </div>
             </CardContent>

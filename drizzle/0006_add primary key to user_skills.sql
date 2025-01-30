@@ -1,0 +1,1 @@
+ALTER TABLE "users_skills" ADD CONSTRAINT "users_skills_users_skills_pk" PRIMARY KEY("users","skills");

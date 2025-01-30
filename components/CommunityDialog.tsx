@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import * as dialog from '@/components/ui/dialog';
 import { difficulty } from '@/types/Tracks';
 import { ChevronDown, ChevronUp, Globe, GlobeLock } from 'lucide-react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { getDifficultyColor } from '@/lib/DifficultyColor';
+import AddTrack from '@/lib/actions/tracks/AddTrack';
+import toast, { Toaster } from 'react-hot-toast';
+import { error } from 'console';
 
 interface TrackDialogProps {
   open: boolean;
@@ -42,10 +45,19 @@ const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track }) =
   };
 
 
+  function handleClick(trackId: number) {
+    toast.promise(AddTrack(trackId), {
+      loading: "Adding...",
+      success: "Added to track",
+      error: "Failed to load"
+    })
+    return;
+  }
 
 
   return (
     <>
+      <Toaster />
       <dialog.Dialog open={open} onOpenChange={setOpen}>
         <dialog.DialogTrigger>
           <span className="hidden"></span>
@@ -69,7 +81,9 @@ const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track }) =
               </div>
             </dialog.DialogTitle>
             <dialog.DialogDescription className="text-gray-600">
-              kar le join
+              <button className='py-2 px-4 ring-1 ring-gray-300 hover:shadow-lg rounded-lg hover: hover:text-black text-sm font-medium transition-all duration-300 ' onClick={() => handleClick(track.trackId)} >
+                add track
+              </button>
             </dialog.DialogDescription>
           </dialog.DialogHeader>
 

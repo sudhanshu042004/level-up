@@ -41,7 +41,7 @@ const DynamicInput = ({ name, setName, TextSize }: { name: string, setName: (nam
             value={name}
             ref={inputRef}
             className={`w-full px-4 py-2 text-lg border-2 border-gray-200 rounded-lg 
-                     focus:outline-none focus:ring-2 focus:ring-blue-200 
+                     focus:outline-none
                      transition-all duration-300 placeholder-gray-400 `}
           />
 
