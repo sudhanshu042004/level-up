@@ -5,6 +5,7 @@ import React, { useContext } from 'react';
 import { Skeleton } from './ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { ChevronRight } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
 
 const Navbar = () => {
   const user = useContext(UserContext);
@@ -48,6 +49,7 @@ const Navbar = () => {
         color: colors.darkBlue
       }}
     >
+      <Toaster />
       <div className='flex items-center space-x-4'>
         <Avatar className='h-20 w-20 border-4' style={{ borderColor: colors.red }}>
           <AvatarImage src={userData.avatar} alt={`${userData.username}'s avatar`} className="object-cover" />

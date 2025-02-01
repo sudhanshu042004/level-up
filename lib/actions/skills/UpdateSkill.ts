@@ -18,7 +18,33 @@ const skillExpCalculate = (difficulty: difficulty) => {
   }
 }
 
-const increasedStats = (maxExp: number, acquiredExp: number, level: number, exp: number) => {
+const increasedStats = (maxExp: number, acquiredExp: number, level: number, exp: number, dueDateStr: null | string) => {
+  if (dueDateStr !== null) {
+    const dueDate = new Date(dueDateStr)
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+    const diffTime = dueDate.getTime() - today.getTime();
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      const decreaseNum = (diffDays * -1) * 100;
+      const decreaseExp = acquiredExp - decreaseNum;
+      if (decreaseExp <= 0) {
+        return {
+          level: level - 1,
+          exp: decreaseExp * -1,
+        }
+      } else {
+        return {
+          level: level,
+          exp: decreaseExp
+        }
+      }
+    }
+
+  }
   const increasedExp = acquiredExp + exp;
   if (maxExp > increasedExp) {
     return {
@@ -38,7 +64,7 @@ const expRequired = (level: number) => {
   return exp;
 }
 
-export const UpdateSkill = async (SkillId: number, skillDifficulty: difficulty, trackId: number) => {
+export const UpdateSkill = async (SkillId: number, skillDifficulty: difficulty, trackId: number, dueDate: null | string) => {
   const session = await verifySession()
   const userId: number = session?.userId as number;
 
@@ -50,7 +76,7 @@ export const UpdateSkill = async (SkillId: number, skillDifficulty: difficulty, 
     const user = await db.select({ level: users.level, exp: users.exp }).from(users).where(eq(users.id, userId))
     const currentLevel = user[0].level as number;
     const currentExp = user[0].exp as number;
-    const { level, exp } = increasedStats(expRequired(currentLevel), skillExpCalculate(skillDifficulty) as number, currentLevel, currentExp);
+    const { level, exp } = increasedStats(expRequired(currentLevel), skillExpCalculate(skillDifficulty) as number, currentLevel, currentExp, dueDate);
 
     await db.update(users).set({ level: level, exp: exp }).where(eq(users.id, userId))
 
@@ -60,7 +86,6 @@ export const UpdateSkill = async (SkillId: number, skillDifficulty: difficulty, 
       .innerJoin(skills, eq(skills.id, users_skills.skillsId))
       .where(and(eq(users_skills.userId, userId), eq(skills.trackId, trackId), eq(users_skills.completed, false)))
 
-    console.log(leftSkill);
     if (leftSkill.length > 0) {
       return {
         level: level,
@@ -73,7 +98,6 @@ export const UpdateSkill = async (SkillId: number, skillDifficulty: difficulty, 
       .where(and(eq(users_tracks.userId, userId), eq(users_tracks.trackId, trackId)))
 
     const rank: rank | null = await UpdateRank() as rank | null;
-    console.log(rank);
 
     return {
       level: level,

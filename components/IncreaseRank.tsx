@@ -55,7 +55,7 @@ const RankIncreaseToast: React.FC<RankIncreaseToastProps> = ({
   }, [onClose]);
 
   return (
-    <div className={`fixed top-4 right-4 transform transition-all duration-500 ease-in-out
+    <div className={` top-4 right-4 transform flex justify-center relative z-10 transition-all duration-500 ease-in-out
       ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
       <div className={`relative bg-gradient-to-r ${getGradient(newRank)} 
         rounded-lg p-4 w-80 border border-white/5

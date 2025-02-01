@@ -68,9 +68,9 @@ const PublicTrack = async () => {
     subSkillName: subSkills.subSkillName
   })
     .from(tracks)
-    .innerJoin(users, eq(users.id, tracks.createdBy))
-    .innerJoin(skills, eq(skills.trackId, tracks.id))
-    .innerJoin(subSkills, eq(subSkills.parentSkill, skills.id))
+    .leftJoin(users, eq(users.id, tracks.createdBy))
+    .leftJoin(skills, eq(skills.trackId, tracks.id))
+    .leftJoin(subSkills, eq(subSkills.parentSkill, skills.id))
     .where(eq(tracks.visibility, true)) as QueryResult[]
 
   const formattedResults = result.reduce<PublicTrack[]>((acc, row) => {
@@ -104,7 +104,7 @@ const PublicTrack = async () => {
       };
       track.track.skills.push(skill);
     }
-    if (!skill.subSkillName.includes(row.subSkillName)) {
+    if (!skill.subSkillName.includes(row.subSkillName) && row.subSkillName !== null) {
       skill.subSkillName.push(row.subSkillName);
     }
 

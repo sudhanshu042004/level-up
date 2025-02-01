@@ -9,6 +9,7 @@ import { difficulty } from '@/types/Tracks';
 import { Globe, Users } from 'lucide-react';
 import CommunityDialog from '@/components/CommunityDialog';
 import PublicTrack from '@/lib/actions/tracks/PublicTracks';
+import { motion } from "motion/react";
 
 interface Track {
   trackId: number;
@@ -52,13 +53,26 @@ const CommunityGrid = () => {
     return (
       <div className="flex h-screen w-full justify-center items-center p-8">
         <div className="flex flex-col items-center gap-4">
-          <div className='animate-bounce' >
-            <div className="animate-spin h-12 w-12 border-b-8  border-white border-t-2 rounded-full  bg-black " ></div>
+          <div className="">
+            <motion.div
+              animate={{
+                translateY: [0, -30, 0],
+                rotate: [0, 360],
+              }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            >
+              <motion.div
+                className="h-12 w-12 border-b-8 border-white border-t-2 rounded-full bg-black"
+                animate={{
+                  backgroundColor: ["#C4CCD4", "#D2E2ED", "#FEC300", "#FDC2CA", "#FD6325", "#FDC2CA", "#FEC300", "#D2E2ED", "#C4CCD4"],
+                }}
+                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              />
+            </motion.div>
           </div>
-
           <p className="text-gray-500 font-medium">Loading tracks...</p>
-        </div>
-      </div>
+        </div >
+      </div >
     );
   }
 

@@ -11,6 +11,8 @@ import { UpdateSkill } from '@/lib/actions/skills/UpdateSkill';
 import { UserContext } from '@/context/UserContext';
 import { Progress } from "rsuite"
 import { UncompleteTracksContext } from '@/context/IncompleteTracks';
+import { rank } from '@/types/userstype';
+import RankIncreaseToast from './IncreaseRank';
 
 interface TrackDialogProps {
   open: boolean;
@@ -22,6 +24,7 @@ interface UpdatingResponse {
   level: number,
   exp: number,
   trackId: number | null,
+  rank: rank | null
 }
 
 const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, setTrack }) => {
@@ -54,26 +57,33 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, setTrac
       };
     });
 
-    const { level, exp } = data;
+    const { level, exp, rank } = data;
     const currentLevel = UserContextData?.user.level ?? 0;
     const currentExp = UserContextData?.user.exp ?? 0;
+    const currentRank = UserContextData?.user.rank
 
     if (data.trackId !== null) {
       setOpen(false)
     }
 
-    if (level > currentLevel || exp > currentExp) {
+    if (level > currentLevel || exp > currentExp || rank != currentRank) {
       toast.custom(() => (
         <ProgressToast
           oldLevel={currentLevel}
           newLevel={level}
           oldExp={currentExp}
           newExp={exp}
+          currentRank={currentRank as rank}
+          newRank={rank as rank}
         />
       ), {
         duration: 4000,
         position: 'bottom-right',
       });
+    }
+    let newRank: rank;
+    if (rank != null) {
+      newRank = rank
     }
 
     UserContextData?.setUser((prev) => {
@@ -84,17 +94,19 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, setTrac
         level: level,
         exp: exp,
         username: prev.username,
+        rank: newRank
       };
     });
 
     TrackContextData?.setTracks((prev) => {
       return prev?.filter(prev => prev.trackId !== trackId)
     })
+    console.log(TrackContextData?.tracks);
 
   };
 
-  function handleCheckbox(skillId: number, skillDifficulty: difficulty, trackId: number) {
-    toast.promise(UpdateSkill(skillId, skillDifficulty, trackId), {
+  function handleCheckbox(skillId: number, skillDifficulty: difficulty, trackId: number, dueDate: null | string) {
+    toast.promise(UpdateSkill(skillId, skillDifficulty, trackId, dueDate), {
       loading: "updating progress....",
       success: (data: UpdatingResponse) => { handleSkillComplete(data, skillId, trackId); return "Skill completed" },
       error: 'something went Wrong'
@@ -139,14 +151,15 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, setTrac
               !skill.completed && (
                 <Card
                   key={skill.skillId}
-                  className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
+                  className="group hover:shadow-lg transition-all cursor-pointer duration-300 hover:-translate-y-0.5"
+                  onClick={() => toggleSkill(skill.skillId)}
                 >
                   <div className="p-4 sm:p-6">
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-4 flex-1">
                         <Checkbox
                           className="h-5 w-5"
-                          onCheckedChange={(e) => handleCheckbox(skill.skillId, skill.difficulty, track.trackId as number)}
+                          onCheckedChange={(e) => handleCheckbox(skill.skillId, skill.difficulty, track.trackId as number, track.dueDate)}
                         />
                         <div className="space-y-1 flex-1">
                           <div className="font-semibold text-gray-900">
@@ -211,13 +224,20 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, setTrac
 
 export default TrackDialog;
 
-const ProgressToast = ({ oldLevel, newLevel, oldExp, newExp }: {
+const ProgressToast = ({ oldLevel, newLevel, oldExp, newExp, currentRank, newRank }: {
   oldLevel: number;
   newLevel: number;
   oldExp: number;
   newExp: number;
+  currentRank: rank;
+  newRank: rank;
 }) => (
   <div className="flex items-start gap-3 bg-white rounded-lg shadow-lg p-4 min-w-[300px]">
+    <div>
+      {currentRank !== newRank && newRank !== null && (
+        <RankIncreaseToast oldRank={currentRank} newRank={newRank} />
+      )}
+    </div>
     <div className="flex-shrink-0">
       {newLevel > oldLevel ? (
         <div className="p-2 bg-yellow-100 rounded-full">

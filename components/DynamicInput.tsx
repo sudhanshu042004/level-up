@@ -19,14 +19,13 @@ const DynamicInput = ({ name, setName, TextSize }: { name: string, setName: (nam
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && name.trim() !== '') {
       setIsEditable(false);
+      setName(name.trim())
     }
   };
 
   const handleChange = (value: string) => {
 
-    if (value !== '') {
-      setName(value);
-    }
+    setName(value)
   };
 
   return (

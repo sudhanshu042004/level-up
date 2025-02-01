@@ -56,7 +56,7 @@ export const getUncompleteTracks = async (): Promise<Track[]> => {
       acc.push(track);
     }
 
-    let skill = track.skills.find(s => s.skillName === row.skillName);
+    let skill = track.skills.find(s => s.skillId === row.skillId);
 
     if (!skill) {
       skill = {
