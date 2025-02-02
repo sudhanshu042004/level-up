@@ -1,0 +1,1 @@
+CREATE INDEX "trackId_idx" ON "tracks" USING btree ("id");

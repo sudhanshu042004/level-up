@@ -10,7 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { UpdateSkill } from '@/lib/actions/skills/UpdateSkill';
 import { UserContext } from '@/context/UserContext';
 import { Progress } from "rsuite"
-import { UncompleteTracksContext } from '@/context/IncompleteTracks';
+import { TracksContext as TracksContext } from '@/context/UserTracks';
 import { rank } from '@/types/userstype';
 import RankIncreaseToast from './IncreaseRank';
 
@@ -30,7 +30,7 @@ interface UpdatingResponse {
 const TrackDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, setTrack }) => {
   const [expandedSkills, setExpandedSkills] = React.useState<Set<number>>(new Set());
   const UserContextData = useContext(UserContext);
-  const TrackContextData = useContext(UncompleteTracksContext);
+  const TrackContextData = useContext(TracksContext);
 
   const toggleSkill = (skillId: number) => {
     setExpandedSkills(prev => {

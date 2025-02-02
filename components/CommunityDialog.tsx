@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import * as dialog from '@/components/ui/dialog';
 import { difficulty } from '@/types/Tracks';
 import { ChevronDown, ChevronUp, Globe, GlobeLock } from 'lucide-react';
@@ -7,12 +7,12 @@ import { Badge } from './ui/badge';
 import { getDifficultyColor } from '@/lib/DifficultyColor';
 import AddTrack from '@/lib/actions/tracks/AddTrack';
 import toast, { Toaster } from 'react-hot-toast';
-import { error } from 'console';
 
 interface TrackDialogProps {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
   track: Track;
+  isAlreadyHave: boolean
 }
 interface Track {
   trackId: number,
@@ -29,8 +29,9 @@ interface Track {
 }
 
 
-const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track }) => {
+const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, isAlreadyHave }) => {
   const [expandedSkills, setExpandedSkills] = React.useState<Set<number>>(new Set());
+
 
   const toggleSkill = (skillId: number) => {
     setExpandedSkills(prev => {
@@ -46,11 +47,11 @@ const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track }) =
 
 
   function handleClick(trackId: number) {
-    toast.promise(AddTrack(trackId), {
-      loading: "Adding...",
-      success: "Added to track",
-      error: "Failed to load"
-    })
+    // toast.promise(AddTrack(trackId), {
+    //   loading: "Adding...",
+    //   success: "Added to track",
+    //   error: "Failed to load"
+    // })
     return;
   }
 
@@ -81,9 +82,7 @@ const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track }) =
               </div>
             </dialog.DialogTitle>
             <dialog.DialogDescription className="text-gray-600">
-              <button className='py-2 px-4 ring-1 ring-gray-300 hover:shadow-lg rounded-lg hover: hover:text-black text-sm font-medium transition-all duration-300 ' onClick={() => handleClick(track.trackId)} >
-                add track
-              </button>
+              Learn from tracks and gain exp
             </dialog.DialogDescription>
           </dialog.DialogHeader>
 
@@ -145,8 +144,12 @@ const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track }) =
 
           <dialog.DialogFooter className="mt-6">
             <dialog.DialogClose className="w-full">
-              <div className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-                Close
+              <div
+                className={`max-w-full px-4 py-2 text-sm font-medium  bg-gray-100 rounded-lg ${isAlreadyHave ? 'text-gray-400 cursor-default ' : 'text-gray-700 hover:bg-gray-200'} transition-colors duration-300 `}
+                onClick={() => handleClick(track.trackId)}
+
+              >
+                {isAlreadyHave ? <>Already have</> : <>Add track</>}
               </div>
             </dialog.DialogClose>
           </dialog.DialogFooter>

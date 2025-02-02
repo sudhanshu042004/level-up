@@ -67,6 +67,7 @@ export interface QueryResult {
   createdBy: number | null;
   skillId: number | null;
   skillName: string | null;
+  completed: boolean,
   skillDifficulty: difficulty | null;
   subSkillName: string | null;
   SkillCompleted: boolean | null
@@ -79,5 +80,6 @@ export interface Track {
   visibility: boolean | null;
   dueDate: string | null;
   createdBy: number | null;
+  completed: boolean,
   skills: SkillType[];
 }

@@ -48,6 +48,20 @@
       "when": 1738253559611,
       "tag": "0006_add primary key to user_skills",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1738395508756,
+      "tag": "0007_users Indexing ",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1738397604145,
+      "tag": "0008_ tracks indexing",
+      "breakpoints": true
     }
   ]
 }

@@ -15,7 +15,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { createTrack } from '@/lib/actions/tracks/CreateTracks';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { UncompleteTracksContext } from '@/context/IncompleteTracks';
+import { TracksContext as TracksContext } from '@/context/UserTracks';
 
 const CreateTracks = () => {
   const [skills, setSkills] = useState<CreatingSkill[]>([]);
@@ -26,7 +26,7 @@ const CreateTracks = () => {
   const [isPublic, setIspublic] = useState<boolean>(true);
 
   const router = useRouter();
-  const trackData = useContext(UncompleteTracksContext);
+  const trackData = useContext(TracksContext);
 
   const toggleExpand = (index: number) => {
     setExpandedIndex((prev) => (prev === index ? null : index));

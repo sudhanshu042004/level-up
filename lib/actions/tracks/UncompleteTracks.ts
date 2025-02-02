@@ -4,13 +4,14 @@ import { skills, subSkills, tracks, users_skills, users_tracks } from "@/src/db/
 import { difficulty, QueryResult, Track } from "@/types/Tracks";
 import { and, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
+import { complex } from "motion/react";
 import { NextResponse } from "next/server";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
 
 
-export const getUncompleteTracks = async (): Promise<Track[]> => {
+export const getUserTracksData = async (): Promise<Track[]> => {
   const session = await verifySession();
   if (session == null) {
     NextResponse.redirect("/login");
@@ -28,6 +29,7 @@ export const getUncompleteTracks = async (): Promise<Track[]> => {
       createdBy: tracks.createdBy,
       skillId: skills.id,
       skillName: skills.skillName,
+      completed: users_tracks.completed,
       skillDifficulty: skills.difficulty,
       subSkillName: subSkills.subSkillName,
       SkillCompleted: users_skills.completed
@@ -37,7 +39,7 @@ export const getUncompleteTracks = async (): Promise<Track[]> => {
     .leftJoin(skills, eq(skills.trackId, users_tracks.trackId))
     .leftJoin(subSkills, eq(subSkills.parentSkill, skills.id))
     .leftJoin(users_skills, and(eq(users_skills.userId, userId), eq(users_skills.skillsId, skills.id)))
-    .where(and(eq(users_tracks.completed, false), eq(users_tracks.userId, userId)))
+    .where(eq(users_tracks.userId, userId))
     .orderBy(users_tracks.dueDate) as QueryResult[];
 
   const formattedResults = results.reduce<Track[]>((acc, row) => {
@@ -49,6 +51,7 @@ export const getUncompleteTracks = async (): Promise<Track[]> => {
         trackName: row.trackName,
         difficulty: row.difficulty,
         visibility: row.visibility,
+        completed: row.completed,
         dueDate: row.dueDate,
         createdBy: row.createdBy,
         skills: []

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ExpProgress from '@/components/ExpProgress';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +10,7 @@ import { Globe, Users } from 'lucide-react';
 import CommunityDialog from '@/components/CommunityDialog';
 import PublicTrack from '@/lib/actions/tracks/PublicTracks';
 import { motion } from "motion/react";
+import { TracksContext, UserTracks } from '@/context/UserTracks';
 
 interface Track {
   trackId: number;
@@ -39,7 +40,9 @@ const CommunityGrid = () => {
   const [click, setClick] = useState(false);
   const [track, setTrack] = useState<Track>();
   const [communityPost, setCommunityPost] = useState<PublicTrackType[]>();
-  console.log(communityPost);
+  const [isAlreadyHave, setIsAlreadyHave] = useState<boolean>(false);
+  const trackContext = useContext(TracksContext);
+  // console.log(communityPost);
 
   useEffect(() => {
     async function getData() {
@@ -49,24 +52,44 @@ const CommunityGrid = () => {
     getData();
   }, []);
 
-  if (!communityPost) {
+
+  if (!communityPost || !trackContext?.tracks) {
     return (
       <div className="flex h-screen w-full justify-center items-center p-8">
         <div className="flex flex-col items-center gap-4">
           <div className="">
             <motion.div
               animate={{
-                translateY: [0, -30, 0],
-                rotate: [0, 360],
+                translateY: [0, -80, 0],
+                scaleY: [1, 0.8, 1],
+                rotate: [0, 360]
               }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: ["easeOut", "easeIn"],
+              }}
             >
               <motion.div
                 className="h-12 w-12 border-b-8 border-white border-t-2 rounded-full bg-black"
                 animate={{
-                  backgroundColor: ["#C4CCD4", "#D2E2ED", "#FEC300", "#FDC2CA", "#FD6325", "#FDC2CA", "#FEC300", "#D2E2ED", "#C4CCD4"],
+                  backgroundColor: [
+                    "#C4CCD4",
+                    "#D2E2ED",
+                    "#FEC300",
+                    "#FDC2CA",
+                    "#FD6325",
+                    "#FDC2CA",
+                    "#FEC300",
+                    "#D2E2ED",
+                    "#C4CCD4",
+                  ],
                 }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                transition={{
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
               />
             </motion.div>
           </div>
@@ -77,13 +100,19 @@ const CommunityGrid = () => {
   }
 
   function handleClick(track: Track) {
+    const existingTrack = trackContext?.tracks.filter(inTrack => inTrack.trackId === track.trackId)
+    if (existingTrack?.length! > 0) {
+      setIsAlreadyHave(true);
+    } else {
+      setIsAlreadyHave(false);
+    }
     setTrack(track);
     setClick(true);
   }
 
   return (
     <div className="container mx-auto md:ml-16 lg:ml-16 px-4 py-8">
-      {track && <CommunityDialog track={track} open={click} setOpen={setClick} />}
+      {track && <CommunityDialog track={track} open={click} setOpen={setClick} isAlreadyHave={isAlreadyHave} />}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {communityPost.map((post, index) => (
           <Card

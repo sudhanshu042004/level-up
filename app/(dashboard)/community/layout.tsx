@@ -1,5 +1,6 @@
+
 "use client";
-import { UserTracks } from "@/context/UserTracks";
+import { UserTracks as UserTracks } from "@/context/UserTracks";
 import "../../globals.css"
 
 export default function RootLayout({

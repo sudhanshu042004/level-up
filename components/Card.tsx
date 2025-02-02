@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Globe, GlobeLock, CalendarClock, ChevronRight } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { UncompleteTracksContext } from '@/context/IncompleteTracks';
+import { TracksContext as TracksContext } from '@/context/UserTracks';
 import { difficulty, Track } from '@/types/Tracks';
 import TrackDialog from './TrackDialog';
 
@@ -16,7 +16,7 @@ const getDifficultyColor = (difficulty: difficulty) => {
 };
 const TrackCard = () => {
   const [open, setOpen] = useState(false);
-  const data = useContext(UncompleteTracksContext);
+  const data = useContext(TracksContext);
   const [track, setTrack] = React.useState<Track>()
 
   function handleClick(track: Track) {
@@ -42,46 +42,47 @@ const TrackCard = () => {
       }
       {data.tracks.length <= 0 && <div className='flex justify-center items-center text-xl text-gray-300' >No tracks added</div>}
       {data.tracks.map((track) => (
-        <Card
-          key={track.trackId}
-          onClick={() => handleClick(track)}
-          className="hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 cursor-pointer"
-        >
-          <div className="p-6" key={track.trackId} >
-            <div className="flex items-start justify-between">
-              <div className="space-y-4 flex-1">
-                <div className="flex items-center gap-3">
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    {track.trackName}
-                  </h3>
-                  {track.visibility ? (
-                    <Globe className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <GlobeLock className="h-5 w-5 text-gray-400" />
-                  )}
+        track.completed == false && (
+          <Card
+            key={track.trackId}
+            onClick={() => handleClick(track)}
+            className="hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          >
+            <div className="p-6" key={track.trackId} >
+              <div className="flex items-start justify-between">
+                <div className="space-y-4 flex-1">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      {track.trackName}
+                    </h3>
+                    {track.visibility ? (
+                      <Globe className="h-5 w-5 text-gray-400" />
+                    ) : (
+                      <GlobeLock className="h-5 w-5 text-gray-400" />
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <Badge
+                      variant="secondary"
+                      className={`${getDifficultyColor(track.difficulty as difficulty)} px-3 py-1`}
+                    >
+                      {track.difficulty}
+                    </Badge>
+
+                    {track.dueDate && (
+                      <div className="flex items-center text-gray-600 text-sm">
+                        <CalendarClock className="h-4 w-4 mr-2" />
+                        <span>{track.dueDate}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <Badge
-                    variant="secondary"
-                    className={`${getDifficultyColor(track.difficulty as difficulty)} px-3 py-1`}
-                  >
-                    {track.difficulty}
-                  </Badge>
-
-                  {track.dueDate && (
-                    <div className="flex items-center text-gray-600 text-sm">
-                      <CalendarClock className="h-4 w-4 mr-2" />
-                      <span>{track.dueDate}</span>
-                    </div>
-                  )}
-                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400" />
               </div>
-
-              <ChevronRight className="h-5 w-5 text-gray-400" />
             </div>
-          </div>
-        </Card>
+          </Card>)
       ))}
 
     </div>

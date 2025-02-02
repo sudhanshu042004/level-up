@@ -15,6 +15,10 @@ export const users = table("users", {
   exp: t.integer().default(0),
   avatar: t.varchar({ length: 1000 }).notNull().default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTe0VDY4CWWO8S2h_WPo2EfRNUu8xPs9HD_-g&s"),
   createdAt: t.timestamp().defaultNow().notNull()
+}, (table) => {
+  return {
+    idIdx: t.index("id_idx").on(table.id)
+  }
 });
 
 export const tracks = table("tracks", {
@@ -24,6 +28,10 @@ export const tracks = table("tracks", {
   visibility: t.boolean().default(true),
   dueDate: t.bigint({ mode: "number" }),
   createdBy: t.integer("users").references(() => users.id).notNull(),
+}, (table) => {
+  return {
+    trackIdIdx: t.index("trackId_idx").on(table.id)
+  }
 });
 
 export const skills = table("skills", {
