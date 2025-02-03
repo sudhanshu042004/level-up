@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import ExpProgress from '@/components/ExpProgress';
 import UpdateUserProfile from '@/lib/actions/users/UpdateUser';
 import toast, { Toaster } from 'react-hot-toast';
+import LoadingBall from '@/components/LoadingBall';
 
 const Settings = () => {
   const userContextData = useContext(UserContext);
@@ -21,10 +22,9 @@ const Settings = () => {
 
   if (userContextData?.user == null || userContextData.maxExp == null) {
     return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-          <p className="text-sm text-slate-500">Loading your profile...</p>
+      <div className="min-h-[80vh] flex w-full justify-center items-center">
+        <div className="flex text-sm text-slate-500 flex-col items-center gap-4">
+          <LoadingBall text='Loading your profile...' />
         </div>
       </div>
     );
@@ -217,7 +217,7 @@ const Settings = () => {
                   <Button
                     type="submit"
                     disabled={isDisable}
-                    className="bg-[#FEC300] transition-all duration-300 hover:bg-[#FEC300] hover:shadow-lg hover:-translate-y-1 text-white flex items-center gap-2"
+                    className="bg-orange-400 transition-all duration-300 hover:bg-orange-500 hover:shadow-lg hover:-translate-y-1 text-white flex items-center gap-2"
                   >
                     {isDisable ? (
                       <>
