@@ -3,9 +3,11 @@ import React from 'react';
 const ExpProgress = ({
   currentExp,
   maxExp,
-  size
+  size,
+  className,
 }: {
   currentExp: number,
+  className: string,
   maxExp: number,
   size: number
 }) => {
@@ -16,7 +18,7 @@ const ExpProgress = ({
   const strokeDashoffset = circumference - (percent / 100) * circumference;
 
   return (
-    <div className="relative">
+    <div className={`relative ${className} `}>
       <svg
         className="-rotate-90"
         width={size}
@@ -39,6 +41,7 @@ const ExpProgress = ({
           strokeWidth={8}
           fill="none"
           strokeLinecap="round"
+          // className={`${className}`}
           style={{
             strokeDasharray: circumference,
             strokeDashoffset,
@@ -47,8 +50,8 @@ const ExpProgress = ({
         />
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#06b6d4" />
+            <stop offset="0%" stopColor="#FEC300" />
+            <stop offset="100%" stopColor="#FD6325" />
           </linearGradient>
         </defs>
       </svg>

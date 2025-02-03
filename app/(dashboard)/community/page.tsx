@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getDifficultyColor } from '@/lib/DifficultyColor';
 import { difficulty } from '@/types/Tracks';
-import { Globe, Users } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import CommunityDialog from '@/components/CommunityDialog';
 import PublicTrack from '@/lib/actions/tracks/PublicTracks';
-import { motion } from "motion/react";
-import { TracksContext, UserTracks } from '@/context/UserTracks';
+import { TracksContext } from '@/context/UserTracks';
+import LoadingBall from '@/components/LoadingBall';
 
 interface Track {
   trackId: number;
@@ -42,7 +42,6 @@ const CommunityGrid = () => {
   const [communityPost, setCommunityPost] = useState<PublicTrackType[]>();
   const [isAlreadyHave, setIsAlreadyHave] = useState<boolean>(false);
   const trackContext = useContext(TracksContext);
-  // console.log(communityPost);
 
   useEffect(() => {
     async function getData() {
@@ -55,47 +54,7 @@ const CommunityGrid = () => {
 
   if (!communityPost || !trackContext?.tracks) {
     return (
-      <div className="flex h-screen w-full justify-center items-center p-8">
-        <div className="flex flex-col items-center gap-4">
-          <div className="">
-            <motion.div
-              animate={{
-                translateY: [0, -80, 0],
-                scaleY: [1, 0.8, 1],
-                rotate: [0, 360]
-              }}
-              transition={{
-                duration: 1,
-                repeat: Infinity,
-                ease: ["easeOut", "easeIn"],
-              }}
-            >
-              <motion.div
-                className="h-12 w-12 border-b-8 border-white border-t-2 rounded-full bg-black"
-                animate={{
-                  backgroundColor: [
-                    "#C4CCD4",
-                    "#D2E2ED",
-                    "#FEC300",
-                    "#FDC2CA",
-                    "#FD6325",
-                    "#FDC2CA",
-                    "#FEC300",
-                    "#D2E2ED",
-                    "#C4CCD4",
-                  ],
-                }}
-                transition={{
-                  duration: 10,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
-            </motion.div>
-          </div>
-          <p className="text-gray-500 font-medium">Loading tracks...</p>
-        </div >
-      </div >
+      <LoadingBall text={"Loading Tracks..."} />
     );
   }
 
@@ -125,6 +84,7 @@ const CommunityGrid = () => {
                   <div className="relative">
                     <div className="relative h-14 w-14">
                       <ExpProgress
+                        className=''
                         size={56}
                         currentExp={post.exp as number}
                         maxExp={expRequired(post.level as number)}

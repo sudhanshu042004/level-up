@@ -47,19 +47,17 @@ const Sidebar = () => {
             key={item.title}
             onClick={() => handleClick(item.title)}
             className={`
-              flex flex-col items-center justify-center w-full h-full
-              ${activeItem === item.title ? 'text-[#f43c04] bg-[#0c0c24]' : 'text-gray-600'}
+              flex flex-col items-center justify-center rounded-full w-full h-full
+              ${activeItem === item.title ? 'text-white bg-[#FD6325]' : 'text-gray-600'}
             `}
           >
             {item.icon}
-            <span className="text-xs mt-1 capitalize">{item.title}</span>
           </button>
         ))}
       </div>
     </div>
   );
 
-  // Desktop/Tablet sidebar
   const DesktopSidebar = () => (
     <>
       <div
@@ -88,8 +86,8 @@ const Sidebar = () => {
               onClick={() => handleClick(item.title)}
               className={`
                 w-full flex items-center px-6 py-4
-                hover:bg-gray-100 transition-colors
-                ${activeItem === item.title ? 'bg-[#0c0c24] text-[#f43c04]' : ''}
+                 transition-all duration-300
+                ${activeItem === item.title ? 'bg-[#FD6325] text-white ' : ' opacity-50 hover:bg-[#C4CCD4]'}
               `}
             >
               <span>{item.icon}</span>

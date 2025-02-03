@@ -22,87 +22,89 @@ const Navbar = () => {
   if (userData == undefined) {
     return (
       <div
-        className="p-6 rounded-2xl shadow-lg flex justify-between items-center"
-        style={{
-          backgroundColor: colors.white,
-          color: colors.darkBlue
-        }}
-      >
-        <div className='flex items-center space-x-4'>
-          <Skeleton className='h-20 w-20 rounded-full' style={{ backgroundColor: colors.midBlue }} />
-          <div className='space-y-2'>
-            <Skeleton className='h-4 w-32 rounded' style={{ backgroundColor: colors.midBlue }} />
-            <Skeleton className='h-4 w-24 rounded' style={{ backgroundColor: colors.midBlue }} />
-            <Skeleton className='h-4 w-40 rounded' style={{ backgroundColor: colors.midBlue }} />
+        className="w-full p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl shadow-lg ">
+        <div className='flex flex-col sm:flex-row items-center gap-3 sm:gap-4 md:gap-6' >
+
+          <div className='flex items-center w-full sm:w-auto space-x-3 sm:space-x-4'>
+            <Skeleton className='h-12 w-12 rounded-full sm:h-16 sm:w-16 md:h-20 md:w-20 border-2 ms:border-4' />
+
+            <div className='flex-1 space-y-2'>
+              <Skeleton className='h-3 w-24 sm:h-4 sm:w-32 rounded' />
+              <Skeleton className='h-4 w-20 sm:w-24 rounded' />
+              <Skeleton className='h-4 w-32 sm:h-4 sm:40 rounded' />
+            </div>
           </div>
+          <Skeleton className='h-10 sm:h-12 w-24 sm:w-28 rounded-lg ml-auto ' />
         </div>
-        <Skeleton className='h-12 w-28 rounded-lg' style={{ backgroundColor: colors.midBlue }} />
       </div>
     )
   }
 
   return (
-    <div
-      className="p-6 rounded-2xl shadow-lg flex justify-between items-center"
-      style={{
-        backgroundColor: colors.white,
-        color: colors.darkBlue
-      }}
-    >
+    <div className="w-full p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl shadow-lg bg-white">
       <Toaster />
-      <div className='flex items-center space-x-4'>
-        <Avatar className='h-20 w-20 border-4' style={{ borderColor: colors.red }}>
-          <AvatarImage src={userData.avatar} alt={`${userData.username}'s avatar`} className="object-cover" />
-          <AvatarFallback
-            style={{
-              backgroundColor: colors.midBlue,
-              color: colors.white
-            }}
-            className="font-bold"
-          >
-            {userData.username.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+      <div className='flex flex-col sm:flex-row sm:justify-between items-center gap-3 sm:gap-4 md:gap-6'>
 
-        <div className='space-y-1'>
-          <div
-            className='text-xl font-semibold'
-            style={{ color: colors.darkBlue }}
-          >
-            {userData?.username}
-          </div>
-          <div
-            className='text-sm flex items-center'
-            style={{ color: colors.midBlue }}
-          >
-            {userData?.rank}
-            <ChevronRight className='w-4 h-4 mx-1' style={{ color: colors.red }} />
-            <span className='font-medium'>Level {userData?.level}</span>
-          </div>
-
-          <div
-            className='w-full rounded-full h-2.5 overflow-hidden'
-            style={{ backgroundColor: colors.midBlue }}
-          >
-            <div
-              className='h-2.5 rounded-full'
+        <div className='flex items-center w-full sm:w-auto space-x-3 sm:space-x-4  ' >
+          <Avatar
+            className='h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 border-2 border-[#FD6325] sm:border-4'>
+            <AvatarImage src={userData.avatar} alt={`${userData.username}'s avatar`} className="object-cover" />
+            <AvatarFallback
               style={{
-                width: `${(userData.exp as number / (user?.maxExp || 1)) * 100}%`,
-                backgroundColor: colors.red,
-                transition: 'width 0.5s ease-in-out'
+                backgroundColor: "#D2E2ED",
+                color: colors.white
               }}
-            />
+              className="text-sm sm:text-base font-bold"
+            >
+              {userData.username.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className=' flex-1 space-y-1 sm:space-y-2'>
+            <div
+              className='text-base sm:text-lg md:text-xl font-semibold '
+              style={{ color: colors.darkBlue }}
+            >
+              {userData?.username}
+            </div>
+
+            <div
+              className='text-xs sm:text-sm flex items-center'
+              style={{ color: colors.midBlue }}
+            >
+              {userData?.rank}
+              <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4 mx-1 ' style={{ color: "#FD6325" }} />
+              <span className='font-medium'>Level {userData?.level}</span>
+            </div>
+
+            <div
+              className='w-full max-w-[200px] sm:max-w-none'
+            >
+              <div className='w-full rounded-full h-2 sm:h-2.5 bg-[#D2E2ED] overflow-hidden '
+              >
+                <div
+                  className='h-full rounded-full transition-all duration-500 ease-in-out '
+                  style={{
+                    width: `${(userData.exp as number / (user?.maxExp || 1)) * 100}%`,
+                    backgroundColor: '#FD6325',
+                  }}
+                />
+              </div>
+              <div className='text-xs sm:text-sm mt-1 ' >
+                {user?.user.exp} / {user?.maxExp}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <Link
-        href="/home/createTracks"
-        className="group flex items-center bg-[#f43c04] text-[#ffffff] hover:-translate-y-1 hover:shadow-lg  space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out"
-      >
-        <span className="font-semibold">Create</span>
-        <ChevronRight className='w-5 h-5 transition-opacity' />
-      </Link>
+        <Link
+          href="/home/createTracks"
+          className="group w-full sm:w-28 flex bg-[#FD6325] text-white items-center justify-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg  "
+        >
+          <span className="font-semibold">Create</span>
+          <ChevronRight className='w-4 h-4 sm:w-5 sm:h-5 transition-opacity' />
+        </Link>
+      </div>
     </div>
   );
 };

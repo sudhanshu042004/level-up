@@ -67,173 +67,177 @@ const CreateTracks = () => {
   }
 
   return (
-    <div className='min-h-screen w-full flex items-center justify-center bg-gray-50 px-4 py-6 sm:px-6 lg:px-8'>
-      <div className='w-full max-w-lg bg-white rounded-xl shadow-md ring-1 ring-gray-200 relative'>
+    <div className='min-h-screen w-full flex items-center justify-center bg-gray-50 p-3 sm:p-4 md:p-6 lg:p-8 '>
+      <div className='w-full max-w-lg bg-white rounded-lg sm:rounded-xl shadow-md ring-1 ring-gray-200 relative flex flex-col max-h-[80vh] '>
         {/* Back Button */}
-        <div className='absolute top-4 left-4 z-10'>
+        <div className='absolute top-3 left-3 sm:top-4 sm:left-4 z-10'>
           <Link
             href='/home'
-            className='flex items-center justify-center w-8 h-8 rounded-full ring-1 ring-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white'
+            className='flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full ring-1 ring-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white'
           >
-            <ArrowLeft className='w-4 h-4' />
+            <ArrowLeft className='w-3.5 h-3.5 sm:h-4 sm:w-4' />
           </Link>
         </div>
 
         {/* Main Content Container */}
-        <div className='p-4 sm:p-6 space-y-6'>
-          {/* Track Name Section */}
-          <div className='mt-12 sm:mt-16'>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>Track Name</label>
-            <DynamicInput
-              name={trackName}
-              setName={setTrackName}
-              TextSize='text-xl sm:text-2xl md:text-3xl'
-            />
-          </div>
+        <div className='flex-1 overflow-y-auto' >
+          <div className='p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6'>
+            {/* Track Name Section */}
+            <div className='mt-10 sm:mt-12 md:mt-16'>
+              <label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2'>Track Name</label>
+              <DynamicInput
+                name={trackName}
+                setName={setTrackName}
+                TextSize='text-lg  sm:text-xl md:text-2xl lg:text-3xl'
+              />
+            </div>
 
-          {/* Skills List */}
-          <div className='space-y-3'>
-            {skills.length > 0 && (
-              <div className='space-y-2'>
-                {skills.map((skill, i) => (
-                  <div
-                    key={i}
-                    className='relative bg-white rounded-lg ring-1 ring-gray-200 p-4 hover:shadow-sm transition-shadow'
-                  >
-                    {/* Delete Button */}
-                    <button
-                      className={`absolute top-2 right-2 p-1.5 rounded-full bg-red-100 hover:bg-red-200 transition-colors ${isHover ? 'opacity-100' : 'opacity-0'
-                        }`}
-                      onMouseEnter={() => setIsHover(true)}
-                      onMouseLeave={() => setIsHover(false)}
+            {/* Skills List */}
+            <div className='space-y-2 sm:space-y-3'>
+              {skills.length > 0 && (
+                <div className='space-y-1.5 sm:space-y-2'>
+                  {skills.map((skill, i) => (
+                    <div
+                      key={i}
+                      className='relative bg-white rounded-lg ring-1 ring-gray-200 p-3 sm:p-4 hover:shadow-sm transition-all duration-300'
                     >
-                      <X className='w-3 h-3' />
-                    </button>
+                      {/* Delete Button */}
+                      <button
+                        className={`absolute top-2 right-2 sm:p-1.5 rounded-full bg-red-100 hover:bg-red-200 transition-all duration-300 ${isHover ? 'opacity-100' : 'opacity-0'
+                          }`}
+                        onMouseEnter={() => setIsHover(true)}
+                        onMouseLeave={() => setIsHover(false)}
+                      >
+                        <X className='w-2.5 h-2.5 sm:w-3 sm:h-3 ' />
+                      </button>
 
-                    {/* Skill Header */}
-                    <div className='flex items-center justify-between pr-8'>
-                      <div>
-                        <h3 className='text-base font-medium'>{skill.skillName}</h3>
-                        <p className='text-xs text-gray-500'>{skill.difficulty}</p>
+                      {/* Skill Header */}
+                      <div className='flex items-center justify-between pr-6 sm:pr-8'>
+                        <div>
+                          <h3 className='text-sm sm:text-base font-medium'>{skill.skillName}</h3>
+                          <p className='text-xs text-gray-500'>{skill.difficulty}</p>
+                        </div>
+
+                        {skill.subSkills.length > 0 && (
+                          <button
+                            onClick={() => toggleExpand(i)}
+                            className='p-1 hover:bg-gray-100 rounded-full transition-colors'
+                          >
+                            {expandedIndex === i ? (
+                              <ChevronUp className='sm:w-4 sm:h-4 w-3.5 h-3.5 ' />
+                            ) : (
+                              <ChevronDown className='sm:w-4 sm:h-4 h-3.5 w-3.5 ' />
+                            )}
+                          </button>
+                        )}
                       </div>
 
-                      {skill.subSkills.length > 0 && (
-                        <button
-                          onClick={() => toggleExpand(i)}
-                          className='p-1 hover:bg-gray-100 rounded-full transition-colors'
-                        >
-                          {expandedIndex === i ? (
-                            <ChevronUp className='w-4 h-4' />
-                          ) : (
-                            <ChevronDown className='w-4 h-4' />
-                          )}
-                        </button>
+                      {/* SubSkills */}
+                      {expandedIndex === i && (
+                        <div className='mt-2 sm:mt-3 pl-4 space-y-1 sm:space-y-1.5 transition-opacity duration-300'>
+                          {skill.subSkills.map((subSkill, subIndex) => (
+                            <p key={subIndex} className='text-xs sm:text-sm text-gray-600'>
+                              {subSkill}
+                            </p>
+                          ))}
+                        </div>
                       )}
                     </div>
-
-                    {/* SubSkills */}
-                    {expandedIndex === i && (
-                      <div className='mt-3 pl-4 space-y-1.5'>
-                        {skill.subSkills.map((subSkill, subIndex) => (
-                          <p key={subIndex} className='text-sm text-gray-600'>
-                            {subSkill}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Add Skills Section */}
-          <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>Add skills</label>
-            <AddSkill setSkills={setSkills} />
-          </div>
-
-          {/* Visibility Toggle */}
-          <div>
-            <label className='block text-sm font-medium text-gray-700 mb-3'>
-              Public or private
-            </label>
-            <div className='flex space-x-3'>
-              <button
-                onClick={() => setIspublic(true)}
-                className={cn(
-                  'p-2.5 rounded-full transition-all',
-                  isPublic ? 'bg-gray-100 shadow-sm' : 'hover:bg-gray-50'
-                )}
-              >
-                <Globe className='w-5 h-5' />
-              </button>
-              <button
-                onClick={() => setIspublic(false)}
-                className={cn(
-                  'p-2.5 rounded-full transition-all',
-                  !isPublic ? 'bg-gray-100 shadow-sm' : 'hover:bg-gray-50'
-                )}
-              >
-                <GlobeLock className='w-5 h-5' />
-              </button>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
 
-          {/* Date Picker */}
-          <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>
-              Select due date
-            </label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
+            {/* Add Skills Section */}
+            <div>
+              <label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2'>Add skills</label>
+              <AddSkill setSkills={setSkills} />
+            </div>
+
+            {/* Visibility Toggle */}
+            <div>
+              <label className='block text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3'>
+                Public or private
+              </label>
+              <div className='flex space-x-2 sm:space-x-3'>
+                <button
+                  onClick={() => setIspublic(true)}
                   className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
+                    'p-2 sm:p-2.5 rounded-full transition-all',
+                    isPublic ? 'bg-gray-200 shadow-sm' : 'hover:bg-gray-50'
                   )}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
-                      </>
-                    ) : (
-                      format(date.from, "LLL dd, y")
-                    )
-                  ) : (
-                    <span>Pick a date</span>
+                  <Globe className='sm:w-5 w-4 h-4 sm:h-5' />
+                </button>
+                <button
+                  onClick={() => setIspublic(false)}
+                  className={cn(
+                    ' p-2 sm:p-2.5 rounded-full transition-all',
+                    !isPublic ? 'bg-gray-200 shadow-sm' : 'hover:bg-gray-50'
                   )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={setDate}
-                  numberOfMonths={1}
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+                >
+                  <GlobeLock className='w-4 h-4 sm:h-5 sm:w-5' />
+                </button>
+              </div>
+            </div>
 
-          {/* Submit Button */}
-          <div className='pt-4'>
-            <Button
-              onClick={handleSubmit}
-              className="w-full sm:w-auto float-right bg-black text-white hover:bg-gray-800"
-            >
-              Create Track
-            </Button>
+            {/* Date Picker */}
+            <div>
+              <label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2'>
+                Select due date
+              </label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal text-xs sm:text-sm ",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    {date?.from ? (
+                      date.to ? (
+                        <>
+                          {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                        </>
+                      ) : (
+                        format(date.from, "LLL dd, y")
+                      )
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={date?.from}
+                    selected={date}
+                    onSelect={setDate}
+                    numberOfMonths={1}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className='h-16 sm:h-20' ></div>
           </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className='sticky bottom-0 left-0 right-0 bg-white  border-gray-100 p-3 sm:p-4 mt-auto z-50 ' >
+          <Button
+            onClick={handleSubmit}
+            className="w-full sm:w-auto float-right bg-black text-white hover:bg-gray-800 text-sm"
+          >
+            Create Track
+          </Button>
         </div>
       </div>
       <Toaster />
-    </div>
+    </div >
   )
 }
 

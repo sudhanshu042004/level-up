@@ -18,46 +18,47 @@ const skillExpCalculate = (difficulty: difficulty) => {
   }
 }
 
-const increasedStats = (maxExp: number, acquiredExp: number, level: number, exp: number, dueDateStr: null | string) => {
-  if (dueDateStr !== null) {
-    const dueDate = new Date(dueDateStr)
+const increasedStats = (
+  maxExp: number,
+  acquiredExp: number,
+  level: number,
+  exp: number,
+  dueDateStr: null | string
+) => {
+  let finalExp = acquiredExp + exp;
+  let finalLevel = level;
 
+  if (dueDateStr !== null) {
+    const dueDate = new Date(dueDateStr);
     const today = new Date();
+
     today.setHours(0, 0, 0, 0);
     dueDate.setHours(0, 0, 0, 0);
+
     const diffTime = dueDate.getTime() - today.getTime();
     const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) {
-      const decreaseNum = (diffDays * -1) * 100;
-      const decreaseExp = acquiredExp - decreaseNum;
-      if (decreaseExp <= 0) {
-        return {
-          level: level - 1,
-          exp: decreaseExp * -1,
-        }
-      } else {
-        return {
-          level: level,
-          exp: decreaseExp
-        }
+      const decreaseNum = Math.abs(diffDays) * 100;
+      finalExp -= decreaseNum;
+
+      if (finalExp < 0) {
+        finalExp = 0;
+        finalLevel--;
       }
     }
+  }
 
+  while (finalExp >= maxExp) {
+    finalExp -= maxExp;
+    finalLevel++;
   }
-  const increasedExp = acquiredExp + exp;
-  if (maxExp > increasedExp) {
-    return {
-      level: level,
-      exp: increasedExp,
-    }
-  } else {
-    return {
-      level: level + 1,
-      exp: increasedExp - maxExp,
-    }
-  }
-}
+
+  return {
+    level: finalLevel,
+    exp: finalExp
+  };
+};
 
 const expRequired = (level: number) => {
   const exp: number = level * 200;
@@ -77,6 +78,8 @@ export const UpdateSkill = async (SkillId: number, skillDifficulty: difficulty, 
     const currentLevel = user[0].level as number;
     const currentExp = user[0].exp as number;
     const { level, exp } = increasedStats(expRequired(currentLevel), skillExpCalculate(skillDifficulty) as number, currentLevel, currentExp, dueDate);
+    console.log(level)
+    console.log(exp)
 
     await db.update(users).set({ level: level, exp: exp }).where(eq(users.id, userId))
 
