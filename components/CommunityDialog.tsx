@@ -1,20 +1,21 @@
 import React, { useContext, useEffect } from 'react';
 import * as dialog from '@/components/ui/dialog';
-import { difficulty } from '@/types/Tracks';
+import { difficulty, Track } from '@/types/Tracks';
 import { ChevronDown, ChevronUp, Globe, GlobeLock } from 'lucide-react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { getDifficultyColor } from '@/lib/DifficultyColor';
 import AddTrack from '@/lib/actions/tracks/AddTrack';
 import toast, { Toaster } from 'react-hot-toast';
+import { TracksContext } from '@/context/UserTracks';
 
 interface TrackDialogProps {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
-  track: Track;
+  track: CommunityTrack;
   isAlreadyHave: boolean
 }
-interface Track {
+interface CommunityTrack {
   trackId: number,
   trackName: string,
   difficulty: difficulty,
@@ -31,7 +32,7 @@ interface Track {
 
 const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, isAlreadyHave }) => {
   const [expandedSkills, setExpandedSkills] = React.useState<Set<number>>(new Set());
-
+  const trackData = useContext(TracksContext)
 
   const toggleSkill = (skillId: number) => {
     setExpandedSkills(prev => {
@@ -45,13 +46,17 @@ const CommunityDialog: React.FC<TrackDialogProps> = ({ open, setOpen, track, isA
     });
   };
 
+  function handleAddButton(data: Track[]) {
+    trackData?.setTracks(data);
+    return "Added to track"
+  }
 
   function handleClick(trackId: number) {
-    // toast.promise(AddTrack(trackId), {
-    //   loading: "Adding...",
-    //   success: "Added to track",
-    //   error: "Failed to load"
-    // })
+    toast.promise(AddTrack(trackId), {
+      loading: "Adding...",
+      success: (data: Track[]) => handleAddButton(data),
+      error: "Failed to load"
+    })
     return;
   }
 

@@ -5,6 +5,7 @@ import { tracks, users_tracks } from "@/src/db/schema";
 import { and, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { NextResponse } from "next/server";
+import GetTrack from "./GetTrack";
 
 const db = drizzle(process.env.DATABASE_URL!);
 const AddTrack = async (trackId: number) => {
@@ -38,8 +39,9 @@ const AddTrack = async (trackId: number) => {
   }
   console.log(newUser_track);
   await db.insert(users_tracks).values(newUser_track).returning()
+  const track = await GetTrack(trackId);
   console.log("updated users_tracks")
-  return true
+  return track;
 
 }
 export default AddTrack;
