@@ -28,29 +28,29 @@ export default function Page() {
       })
   }
 
-  const floatingItems = Array(3).fill(null);
+  const floatingItems = Array(3).fill(0);
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-red-400 via-orange-300 to-yellow-200">
       {/* Floating Background Elements */}
-      {floatingItems.map((_, index) => (
-        <motion.div
-          key={index}
-          className="absolute"
-          initial={{ y: Math.random() * 100, x: Math.random() * 100 }}
-          animate={{
-            y: [Math.random() * -100, Math.random() * 100],
-            x: [Math.random() * -100, Math.random() * 100],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "reverse",
-            delay: index * 2
-          }}
-        >
-          <div className="w-32 h-32 rounded-full bg-white opacity-10" />
-        </motion.div>
-      ))}
+      {/* {floatingItems.map((_, index) => ( */}
+      {/*   <motion.div */}
+      {/*     key={index} */}
+      {/*     className="absolute" */}
+      {/*     initial={{ y: Math.random() * 100, x: Math.random() * 100 }} */}
+      {/*     animate={{ */}
+      {/*       y: [Math.random() * -100, Math.random() * 100], */}
+      {/*       x: [Math.random() * -100, Math.random() * 100], */}
+      {/*     }} */}
+      {/*     transition={{ */}
+      {/*       duration: 20, */}
+      {/*       repeat: Infinity, */}
+      {/*       repeatType: "reverse", */}
+      {/*       delay: index * 2 */}
+      {/*     }} */}
+      {/*   > */}
+      {/*     <div className="w-32 h-32 rounded-full bg-white opacity-10" /> */}
+      {/*   </motion.div> */}
+      {/* ))} */}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

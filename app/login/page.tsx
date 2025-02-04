@@ -48,10 +48,9 @@ const Login = () => {
 
   return (
     <div className='relative min-h-screen flex justify-center items-center bg-gradient-to-r from-red-100 via-orange-100 to-yellow-100 overflow-hidden'>
-      {/* Animated Bubbles */}
-      {[...Array(15)].map((_, i) => (
-        <Bubble key={i} delay={i * 0.3} />
-      ))}
+      {/* {[...Array(15)].map((_, i) => ( */}
+      {/*   <Bubble key={i} delay={i * 0.3} /> */}
+      {/* ))} */}
 
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
