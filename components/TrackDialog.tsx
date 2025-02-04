@@ -84,7 +84,7 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, onOpenChange, track, se
     }
 
     console.log(rank);
-    if (rank !== null) {
+    if (rank !== null && rank !== undefined) {
       toast.custom(() => (
         <RankIncreaseToast oldRank={currentRank as rank} newRank={rank} />
       ))

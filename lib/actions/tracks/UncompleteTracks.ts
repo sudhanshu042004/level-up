@@ -4,7 +4,6 @@ import { skills, subSkills, tracks, users_skills, users_tracks } from "@/src/db/
 import { difficulty, QueryResult, Track } from "@/types/Tracks";
 import { and, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { complex } from "motion/react";
 import { NextResponse } from "next/server";
 
 const db = drizzle(process.env.DATABASE_URL!);
