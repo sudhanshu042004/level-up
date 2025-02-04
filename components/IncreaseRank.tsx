@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, Trophy, Star, X, Sparkles } from 'lucide-react';
-import { number } from 'zod';
 
 type RankIncreaseToastProps = {
   oldRank?: string;
@@ -167,8 +166,6 @@ const ProgressToast: React.FC<ProgressToastProps> = ({
   newLevel,
   oldExp,
   newExp,
-  currentRank,
-  newRank
 }) => {
   const expRequired = getExpRequiredForLevel(newLevel);
   const progressPercentage = calculateExpProgress(newExp, expRequired);
@@ -180,10 +177,6 @@ const ProgressToast: React.FC<ProgressToastProps> = ({
       exit={{ opacity: 0, y: -50 }}
       className="flex flex-col sm:flex-row items-start gap-4 bg-gradient-to-br from-orange-950 to-red-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-[95vw] sm:max-w-md border border-orange-500/20"
     >
-      {currentRank !== newRank && newRank !== null && (
-        <RankIncreaseToast oldRank={currentRank} newRank={newRank} />
-      )}
-
       <motion.div
         className="flex items-start gap-3 sm:gap-4 w-full"
         initial={{ x: -20 }}

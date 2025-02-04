@@ -72,7 +72,7 @@ export const getUserTracksData = async (): Promise<Track[]> => {
       track.skills.push(skill);
     }
 
-    if (row.subSkillName) {
+    if (row.subSkillName && row.subSkillName != null) {
       skill.subSkills.push(row.subSkillName);
     }
 

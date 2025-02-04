@@ -67,7 +67,7 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, onOpenChange, track, se
       onOpenChange(false);
     }
 
-    if (level > currentLevel || exp > currentExp || rank != currentRank) {
+    if (level > currentLevel || exp > currentExp) {
       toast.custom(() => (
         <ProgressToast
           oldLevel={currentLevel}
@@ -82,9 +82,12 @@ const TrackDialog: React.FC<TrackDialogProps> = ({ open, onOpenChange, track, se
         position: 'bottom-right',
       });
     }
-    let newRank: rank;
-    if (rank != null) {
-      newRank = rank
+
+    console.log(rank);
+    if (rank !== null) {
+      toast.custom(() => (
+        <RankIncreaseToast oldRank={currentRank as rank} newRank={rank} />
+      ))
     }
 
     UserContextData?.setUser((prev) => {
