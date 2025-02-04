@@ -4,10 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { UserContext } from '@/context/UserContext'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Sparkles } from 'lucide-react'
 import SkillCard from '@/components/SkillsCard'
 import ExpProgress from '@/components/ExpProgress'
+import { SkillType } from '@/types/Tracks'
+import { GetSkills } from '@/lib/actions/skills/GetSkills'
+import LoadingBall from '@/components/LoadingBall'
 
 const LevelBadge = ({ level }: { level: number }) => (
   <div className="absolute -top-2 sm:-top-3 -right-2 sm:-right-3 flex items-center justify-center">
@@ -21,27 +23,20 @@ const LevelBadge = ({ level }: { level: number }) => (
   </div>
 )
 
-const LoadingSkeleton = () => (
-  <div className="flex w-full min-h-screen items-center justify-center bg-gradient-to-r from-gray-50 to-blue-50 p-4">
-    <Card className="w-full max-w-sm md:max-w-md p-4 sm:p-6 shadow-lg">
-      <CardContent className="space-y-6">
-        <div className="flex justify-center">
-          <Skeleton className="h-24 w-24 sm:h-36 sm:w-36 rounded-full" />
-        </div>
-        <div className="space-y-4">
-          <Skeleton className="h-5 sm:h-6 w-3/4 mx-auto" />
-          <Skeleton className="h-4 sm:h-5 w-1/2 mx-auto" />
-        </div>
-      </CardContent>
-    </Card>
-  </div>
-)
-
 const Profile = () => {
   const userContextData = useContext(UserContext)
+  const [skills, setSkills] = React.useState<SkillType[]>()
 
-  if (!userContextData?.user || !userContextData?.maxExp) {
-    return <LoadingSkeleton />
+  React.useEffect(() => {
+    async function getData() {
+      const result = await GetSkills();
+      setSkills(result);
+    }
+    getData();
+  }, []);
+
+  if (!userContextData?.user || !userContextData?.maxExp || !skills) {
+    return <LoadingBall text='Loading Skills....' />
   }
 
   const { user } = userContextData
@@ -102,7 +97,7 @@ const Profile = () => {
 
           {/* Scrollable Skills Section */}
           <div className="flex-1 lg:max-h-screen lg:overflow-y-auto">
-            <SkillCard />
+            <SkillCard skills={skills} />
           </div>
         </div>
       </div>

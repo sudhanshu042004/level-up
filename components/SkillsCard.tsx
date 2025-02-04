@@ -30,16 +30,7 @@ const getDifficultyColor = (difficulty: difficulty) => {
   }
 };
 
-const SkillCard = () => {
-  const [skills, setSkills] = React.useState<SkillType[]>();
-
-  React.useEffect(() => {
-    async function getData() {
-      const result = await GetSkills();
-      setSkills(result);
-    }
-    getData();
-  }, []);
+const SkillCard = ({ skills }: { skills: SkillType[] }) => {
 
   if (!skills) {
     return (

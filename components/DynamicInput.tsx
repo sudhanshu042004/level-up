@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Check, PencilLine } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const DynamicInput = ({ name, setName, TextSize }: { name: string, setName: (name: string) => void, TextSize: undefined | string }) => {
+const DynamicInput = ({ name, setName, TextSize = 'text-xl' }: {
+  name: string,
+  setName: (name: string) => void,
+  TextSize?: string
+}) => {
   const [isEditable, setIsEditable] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  if (!TextSize) {
-    TextSize = 'text-xl'
-  }
 
   useEffect(() => {
     if (isEditable && inputRef.current) {
@@ -19,64 +20,76 @@ const DynamicInput = ({ name, setName, TextSize }: { name: string, setName: (nam
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && name.trim() !== '') {
       setIsEditable(false);
-      setName(name.trim())
+      setName(name.trim());
     }
-  };
-
-  const handleChange = (value: string) => {
-
-    setName(value)
   };
 
   return (
     <div className="w-full max-w-md">
-      {isEditable ? (
-        <div className="relative">
-          <input
-            placeholder="Enter skill name"
-            onChange={(e) => handleChange(e.target.value)}
-            onKeyDown={handleEnter}
-            onBlur={() => name.trim() !== '' && setIsEditable(false)}
-            value={name}
-            ref={inputRef}
-            className={`w-full px-4 py-2 text-lg border-2 border-gray-200 rounded-lg 
-                     focus:outline-none
-                     transition-all duration-300 placeholder-gray-400 `}
-          />
-
-          <button
-            onClick={() => setIsEditable(false)}
-            className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 
-                       hover:text-gray-600 transition-colors duration-200'
-            aria-label="Confirm skill name"
+      <AnimatePresence mode="wait">
+        {isEditable ? (
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
           >
-            <Check />
-          </button>
-
-        </div>
-      ) : (
-        <div
-          className="group relative inline-block px-4 py-4 justify-center text-center items-center rounded-lg
-                   hover:bg-gray-100 transition-all duration-300"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <span className={`${TextSize} font-semibold text-gray-800`}>
-            {name}
-          </span>
-          <button
-            className={`ml-3 p-1.5 rounded-full 
-                     ${isHovered ? 'opacity-100' : 'opacity-0'} 
-                     hover:bg-gray-200 transition-all duration-300`}
-            onClick={() => setIsEditable(true)}
-            aria-label="Edit skill name"
+            <input
+              placeholder="Enter skill name"
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={handleEnter}
+              onBlur={() => name.trim() !== '' && setIsEditable(false)}
+              value={name}
+              ref={inputRef}
+              className="w-full px-4 py-3 text-lg border-2 border-orange-200 rounded-lg 
+                       focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-200
+                       transition-all duration-300 placeholder-gray-400
+                       bg-gradient-to-r from-orange-50 to-yellow-50"
+            />
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => name.trim() !== '' && setIsEditable(false)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-orange-400 
+                       hover:text-orange-600 transition-colors duration-200"
+              aria-label="Confirm skill name"
+            >
+              <Check className="w-5 h-5" />
+            </motion.button>
+          </motion.div>
+        ) : (
+          <motion.div
+            className="group relative inline-block px-4 py-4 rounded-lg
+                     hover:bg-gradient-to-r hover:from-orange-50 hover:to-yellow-50
+                     transition-all duration-300"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            <PencilLine className="h-4 w-4 text-gray-600" />
-          </button>
-        </div>
-      )
-      }
-    </div >
+            <motion.span
+              className={`${TextSize} font-semibold text-gray-800`}
+              layoutId="text"
+            >
+              {name}
+            </motion.span>
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="ml-3 p-1.5 rounded-full hover:bg-orange-200 transition-all duration-300"
+              onClick={() => setIsEditable(true)}
+              aria-label="Edit skill name"
+            >
+              <PencilLine className="h-4 w-4 text-orange-600" />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 

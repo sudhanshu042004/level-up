@@ -11,13 +11,6 @@ const Navbar = () => {
   const user = useContext(UserContext);
   const userData = user?.user;
 
-  const colors = {
-    white: '#ffffff',
-    red: '#f43c04',
-    darkBlue: '#0c0c24',
-    midBlue: '#1c1c2c',
-    black: '#000000'
-  };
 
   if (userData == undefined) {
     return (
@@ -52,7 +45,6 @@ const Navbar = () => {
             <AvatarFallback
               style={{
                 backgroundColor: "#D2E2ED",
-                color: colors.white
               }}
               className="text-sm sm:text-base font-bold"
             >
@@ -63,14 +55,12 @@ const Navbar = () => {
           <div className=' flex-1 space-y-1 sm:space-y-2'>
             <div
               className='text-base sm:text-lg md:text-xl font-semibold '
-              style={{ color: colors.darkBlue }}
             >
               {userData?.username}
             </div>
 
             <div
               className='text-xs sm:text-sm flex items-center'
-              style={{ color: colors.midBlue }}
             >
               {userData?.rank}
               <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4 mx-1 ' style={{ color: "#FD6325" }} />
