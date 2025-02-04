@@ -40,8 +40,8 @@ export default function Home() {
               key={i}
               className="absolute h-2 w-2 rounded-full bg-orange-400/20"
               animate={{
-                x: [Math.random() * window.innerWidth, Math.random() * window.innerWidth],
-                y: [Math.random() * window.innerHeight, Math.random() * window.innerHeight],
+                x: [Math.random() * 100, Math.random() * 100],
+                y: [Math.random() * 100, Math.random() * 100],
               }}
               transition={{
                 duration: Math.random() * 10 + 10,

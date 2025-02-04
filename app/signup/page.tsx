@@ -28,7 +28,7 @@ export default function Page() {
       })
   }
 
-  const floatingItems = Array(3).fill(0);
+  // const floatingItems = Array(3).fill(0);
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-red-400 via-orange-300 to-yellow-200">
       {/* Floating Background Elements */}
