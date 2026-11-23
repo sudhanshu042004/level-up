@@ -83,3 +83,66 @@ body {
 }
 
 
+
+@layer utilities {
+  .text-gradient-fire {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-500 to-red-500;
+  }
+  .xp-bar-fill {
+    background-image: linear-gradient(90deg, #FEC300, #FD6325, #ef4444);
+    background-size: 200% 100%;
+    animation: xp-shimmer 3s linear infinite;
+    box-shadow: 0 0 12px rgba(253, 99, 37, 0.55);
+  }
+}
+
+@keyframes xp-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-bar-fill { animation: none; }
+}
+
+/* ---------- Pixel / arcade theme (landing page) ---------- */
+.pixel-font { font-family: var(--font-pixel), monospace; }
+.pixelated { image-rendering: pixelated; }
+
+.pixel-box {
+  background: #1f0e08;
+  border: 4px solid #fdba74;
+  box-shadow:
+    inset -4px -4px 0 0 #7c2d12,
+    inset 4px 4px 0 0 #431407,
+    6px 6px 0 0 rgba(0, 0, 0, 0.55);
+}
+.pixel-btn {
+  font-family: var(--font-pixel), monospace;
+  border: 4px solid #fff;
+  box-shadow: inset -4px -4px 0 0 rgba(0,0,0,0.35), inset 4px 4px 0 0 rgba(255,255,255,0.35), 5px 5px 0 0 #000;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+.pixel-btn:hover { transform: translate(-2px, -2px); box-shadow: inset -4px -4px 0 0 rgba(0,0,0,0.35), inset 4px 4px 0 0 rgba(255,255,255,0.35), 7px 7px 0 0 #000; }
+.pixel-btn:active { transform: translate(4px, 4px); box-shadow: inset -4px -4px 0 0 rgba(0,0,0,0.35), inset 4px 4px 0 0 rgba(255,255,255,0.35), 1px 1px 0 0 #000; }
+
+.xp-segments {
+  background-image: repeating-linear-gradient(90deg, transparent 0 14px, #1f0e08 14px 18px);
+}
+.pixel-blink { animation: pixel-blink 1s steps(2, start) infinite; }
+.pixel-twinkle { animation: pixel-twinkle 2.4s steps(3, end) infinite; }
+.pixel-float { animation: pixel-float 3s steps(6, end) infinite alternate; }
+.pixel-comet { animation: pixel-comet 9s linear infinite; }
+
+@keyframes pixel-blink { to { visibility: hidden; } }
+@keyframes pixel-twinkle { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.2; transform: scale(0.6); } }
+@keyframes pixel-float { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+@keyframes pixel-comet {
+  0% { transform: translate(-10vw, 0); opacity: 0; }
+  5% { opacity: 1; }
+  30% { transform: translate(110vw, 25vh); opacity: 1; }
+  31%, 100% { transform: translate(110vw, 25vh); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixel-blink, .pixel-twinkle, .pixel-float, .pixel-comet { animation: none; }
+}
